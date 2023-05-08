@@ -3,3 +3,5 @@
 .bloop/
 .ammonite/
 metals.sbt
+.bsp/
+*.class
