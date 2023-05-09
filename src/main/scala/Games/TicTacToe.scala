@@ -53,18 +53,26 @@ object TicTacToe {
     var gameState = state
     if (gameState == null) {
       gameState = get_init_state()
-    }
-
-    App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
-    var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
-    for (i <- 0 until gameState(0).asInstanceOf[Int]) {
-      for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-        buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).toString)
-        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 100))
-//        buttons(i)(j).setActionCommand(i.toString + j.toString)
-        App.board.add(buttons(i)(j))
+      App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
+      var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).toString)
+          buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 100))
+          App.board.add(buttons(i)(j))
+        }
+      }
+    } else {
+      val buttons = App.board.getComponents
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          println("i=" + i + " j=" + j + " < " + gameState(3).asInstanceOf[Array[Array[Char]]](i)(j) + " >")
+        }
       }
     }
+
+
+
     App.board.revalidate()
     App.board.repaint()
 
@@ -75,7 +83,7 @@ object TicTacToe {
     state(0) = 3
     state(1) = 3
     state(2) = 0
-    state(3) = Array.ofDim[Char](3, 3).map(_.map(_ => ' '))
+    state(3) = Array.ofDim[Char](3, 3).map(_.map(_ => '0'))
     state(4) = Array(state(3))
     return state
   }
