@@ -20,6 +20,7 @@ object AbstractEngine
 			var input: String = App.input
 			App.inputReady = false
 			state = concrete_controller(input, state)
+			println(state == null)
 		}
 	}
 

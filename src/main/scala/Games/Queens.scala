@@ -32,13 +32,23 @@ object Queens {
 //    }
   }
 
-  val QueensController = (input: String, CurrentState: Array[Any]) => {
-    new Array[Any](0)
+  val QueensController = (input: String, state: Array[Any]) => {
+    var actualState = state
+    if (actualState == null){
+      actualState = get_init_state()
+    }
+    actualState
   }
 
-  val QueensDrawer = (CurrentState: Array[Any]) => {
+  val QueensDrawer = (state: Array[Any]) => {
 
   }
 
+  private def get_init_state(): Array[Any] ={
+    var state = Array[Any](5)
+    var (row, col, turn) = (8, 8, 0)
+
+    return state
+  }
 
 }
