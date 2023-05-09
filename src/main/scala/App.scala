@@ -3,8 +3,7 @@ import javax.swing._
 import java.io.File
 import javax.imageio.ImageIO
 import scala.collection.immutable.List
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
+import java.awt.event.{ActionEvent, ActionListener, MouseAdapter, MouseEvent}
 import Games._
 
 
@@ -48,7 +47,7 @@ object App {
 		val user_input_1 = createTextField(gamePanel, 34, 680)
 		val user_input_2 = createTextField(gamePanel, 200, 680)
 
-		val label_gametitle = new JLabel();
+		val label_gametitle = new JLabel()
 		label_gametitle.setBounds(160, 10, 1115, 84)
 		label_gametitle.setFont(new Font("Arial", Font.BOLD, 50))
 		gamePanel.add(label_gametitle)
@@ -57,7 +56,21 @@ object App {
 			label_gametitle.setText(title)
 		}
 
-//		val GUI_CONTROLS =
+
+		def addActionListener(field: JTextField, func: String): Unit = {
+			// Remove all previous action listeners
+			for (listener <- field.getActionListeners) {
+				field.removeActionListener(listener)
+			}
+			// Add new action listener
+			field.addActionListener(new ActionListener() {
+				override def actionPerformed(e: ActionEvent): Unit = {
+					if (e.getSource == user_input_1 && user_input_1.getText.nonEmpty) {
+						println(s"Text entered: ${user_input_1.getText}")
+					}
+				}
+			})
+		}
 
 		def start_game(game: String): Unit = {
 			val (controller, drawer, title) = game match {
@@ -70,7 +83,11 @@ object App {
 			}
 			setGameTitle(title)
 			AbstractEngine.abstract_engine(controller, drawer)
+
+			addActionListener(user_input_1, "A")
+			addActionListener(user_input_2, "B")
 		}
+
 
 		def setActivePanel(panel: JPanel): Unit = {
 			panelsList.foreach(panel => panel.setVisible(false))
