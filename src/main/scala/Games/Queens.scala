@@ -1,8 +1,9 @@
 package Games
 import javax.swing._
-import java.awt.{GridLayout, Component}
-import javax.swing.{JPanel, JFrame, JLabel}
+import java.awt.{Component, GridLayout}
+import javax.swing.{JFrame, JLabel, JPanel}
 import java.awt.Color
+import scala.util.matching.Regex
 
 // Define a class that extends the GameState trait
 //class QueensGameState extends GameState {
@@ -37,6 +38,9 @@ object Queens {
     if (actualState == null){
       actualState = get_init_state()
     }
+    val addPattern: Regex = "[0-7][a-h]".r
+    val deletePattern: Regex = "delete [a-h]".r
+    if (deletePattern.matches(input))
     actualState
   }
 
@@ -47,7 +51,13 @@ object Queens {
   private def get_init_state(): Array[Any] ={
     var state = Array[Any](5)
     var (row, col, turn) = (8, 8, 0)
-
+    var board: Array[Array[Boolean]] = Array.fill(8)(Array.fill(8)(false))
+    var history = List(board)
+    state(0) = row
+    state(1) = col
+    state(2) = turn
+    state(3) = board
+    state(4) = history
     return state
   }
 
