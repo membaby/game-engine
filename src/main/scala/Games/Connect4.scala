@@ -1,18 +1,17 @@
 package Games
-import Model._
 import javax.swing._
 import java.awt.{GridLayout, Component}
 import javax.swing.{JPanel, JFrame, JLabel}
 
 // Define a class that extends the GameState trait
-class ConnectGameState extends GameState {
-  // Override the abstract fields as desired
-  override var rows = 6
-  override var cols = 7
-  override var turn = 0
-  override var board = Array.ofDim[Char](rows, cols)
-  override var history: List[Array[Array[Char]]] = List(board)
-}
+//class ConnectGameState extends GameState {
+//  // Override the abstract fields as desired
+//  override var rows = 6
+//  override var cols = 7
+//  override var turn = 0
+//  override var board = Array.ofDim[Char](rows, cols)
+//  override var history: List[Array[Array[Char]]] = List(board)
+//}
 
 object Connect {
 

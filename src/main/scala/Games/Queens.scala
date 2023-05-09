@@ -1,19 +1,18 @@
 package Games
-import Model._
 import javax.swing._
 import java.awt.{GridLayout, Component}
 import javax.swing.{JPanel, JFrame, JLabel}
 import java.awt.Color
 
 // Define a class that extends the GameState trait
-class QueensGameState extends GameState {
-  // Override the abstract fields as desired
-  override var rows = 8
-  override var cols = 8
-  override var turn = 0
-  override var board = Array.ofDim[Char](rows, cols)
-  override var history: List[Array[Array[Char]]] = List(board)
-}
+//class QueensGameState extends GameState {
+//  // Override the abstract fields as desired
+//  override var rows = 8
+//  override var cols = 8
+//  override var turn = 0
+//  override var board = Array.ofDim[Char](rows, cols)
+//  override var history: List[Array[Array[Char]]] = List(board)
+//}
 
 object Queens {
 
