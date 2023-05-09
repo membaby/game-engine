@@ -84,12 +84,12 @@ object App {
 
 		def start_game(game: String): Unit = {
 			val (controller, drawer, title) = game match {
-				case "Checkers"  => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
-				case "Sudoku" 	 => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
+//				case "Checkers"  => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
+//				case "Sudoku" 	 => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
 				case "TicTacToe" => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tick Tack Toe")
-				case "8Queens" 	 => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
-				case "Chess" 		 => (Chess.ChessController, Chess.ChessDrawer, "Chess")
-				case "connect-4" => (Connect.ConnectController, Connect.ConnectDrawer, "Connect 4")
+//				case "8Queens" 	 => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
+//				case "Chess" 		 => (Chess.ChessController, Chess.ChessDrawer, "Chess")
+//				case "connect-4" => (Connect.ConnectController, Connect.ConnectDrawer, "Connect 4")
 			}
 			setGameTitle(title)
 			engineThread = new Thread(new Runnable {
