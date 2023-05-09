@@ -29,7 +29,6 @@ object TicTacToe {
   }
 
   val TicTacToeDrawer = (state: Array[Any]) => {
-    println("TicTacToeDrawer")
     var gameState = state
     if (gameState == null) {
       gameState = get_init_state()
