@@ -5,16 +5,6 @@ import javax.swing.{JFrame, JLabel, JPanel}
 import java.awt.Color
 import scala.util.matching.Regex
 
-// Define a class that extends the GameState trait
-//class QueensGameState extends GameState {
-//  // Override the abstract fields as desired
-//  override var rows = 8
-//  override var cols = 8
-//  override var turn = 0
-//  override var board = Array.ofDim[Char](rows, cols)
-//  override var history: List[Array[Array[Char]]] = List(board)
-//}
-
 object Queens {
 
   def setup(panel: JPanel): Unit = {
@@ -40,7 +30,50 @@ object Queens {
     }
     val addPattern: Regex = "[0-7][a-h]".r
     val deletePattern: Regex = "delete [a-h]".r
-    if (deletePattern.matches(input))
+    if (deletePattern.matches(input)){
+      var board = state(3).asInstanceOf[Array[Array[Boolean]]]
+      val col = input.charAt(7) - 'a'
+      var queenAt = -1
+      for (row <- 0 to 7){
+        if (board(row)(col) == true) queenAt = row
+      }
+      if (queenAt == -1){
+        //Invalid column
+      }
+      else{
+        board(queenAt)(col) = false
+      }
+    }
+    else if (addPattern.matches(input)){
+      var board = state(3).asInstanceOf[Array[Array[Boolean]]]
+      val (row, col) = (input.charAt(0)-'0', input.charAt(1)-'a')
+      var validQueen = true
+      //Check column
+      for (y <- 0 to 7){
+        if (board(y)(col) == true) validQueen = false
+      }
+      //Check row
+      for (x <- 0 to 7) {
+        if (board(row)(x) == true) validQueen = false
+      }
+      //Check diagonals
+      var (diagRow, diagCol) = (row - Math.min(row, col), col - Math.min(row, col))
+      while (diagRow < 8 && diagCol < 8) {
+        if (board(diagRow)(diagCol) == true) validQueen = false
+        diagCol += 1
+        diagRow += 1
+      }
+      if (validQueen){
+        board(diagRow)(diagCol) = true
+        state(2) = state(2).asInstanceOf[Int] + 1
+      }
+      else{
+        //Invalid place for queen
+      }
+    }
+    else{
+      //Invalid input
+    }
     actualState
   }
 
