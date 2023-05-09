@@ -13,7 +13,7 @@ import javax.swing.{JPanel, JFrame, JLabel}
 //  override var history: List[Array[Array[Char]]] = List(board)
 //}
 
-object Connect {
+object Connect4 {
 
   def setup(panel: JPanel): Unit = {
 //    var state = new ConnectGameState()
