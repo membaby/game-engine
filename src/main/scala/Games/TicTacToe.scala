@@ -18,21 +18,25 @@ class TicTacToeGameState extends GameState {
 object TicTacToe {
 
   def setup(panel: JPanel): Unit = {
-    var state = new TicTacToeGameState()
-    TicTacToeDrawer(state)
-    panel.setLayout(new GridLayout(state.rows, state.cols))
-    var buttons = Array.ofDim[JButton](state.rows, state.cols)
-    for (i <- 0 until state.rows) {
-      for (j <- 0 until state.cols) {
-        buttons(i)(j) = new JButton(state.board(i)(j).toString)
-        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 100))
-        buttons(i)(j).setActionCommand(i.toString + j.toString)
-        panel.add(buttons(i)(j))
-      }
-    }
+//    var state = new TicTacToeGameState()
+//    TicTacToeDrawer(state)
+//    panel.setLayout(new GridLayout(state.rows, state.cols))
+//    var buttons = Array.ofDim[JButton](state.rows, state.cols)
+//    for (i <- 0 until state.rows) {
+//      for (j <- 0 until state.cols) {
+//        buttons(i)(j) = new JButton(state.board(i)(j).toString)
+//        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 100))
+//        buttons(i)(j).setActionCommand(i.toString + j.toString)
+//        panel.add(buttons(i)(j))
+//      }
+//    }
   }
 
-  private def TicTacToeDrawer(CurrentState: TicTacToeGameState): Unit = {
+  val TicTacToeController = (input: String, state: Array[Any]) => {
+    new Array[Any](0)
+  }
+
+  val TicTacToeDrawer = (state: Array[Any]) => {
 
   }
 

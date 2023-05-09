@@ -7,19 +7,19 @@ object AbstractEngine
 		var state: Array[Any] = null
 		//Initialize abstract controller
 		val concrete_controller: (String, Array[Any]) => Array[Any] = abstract_controller(controller)
-		//Initialize abtract drawer
+		//Initialize abstract drawer
 		val concrete_drawer: Array[Any] => Unit = abstract_drawer(drawer)
 
 		while (true)
 		{
-			//pass state to drawer
+			drawer(state)
 			//Take input from user
 			//pass input and state to concrete controller
 		}
 	}
 
 
-	def abstract_controller(game_controller: (String, Array[Any]) => Array[Any]) : ((String, Array[Any]) => Array[Any]) = 
+	private def abstract_controller(game_controller: (String, Array[Any]) => Array[Any]) : ((String, Array[Any]) => Array[Any]) =
 	{
 		val concrete_controller = (input:String, state: Array[Any]) =>
 		{
@@ -33,7 +33,7 @@ object AbstractEngine
 	}
 
 
-	def abstract_drawer(game_drawer: Array[Any] => Unit) : Array[Any] => Unit = 
+	private def abstract_drawer(game_drawer: Array[Any] => Unit) : Array[Any] => Unit =
 	{
 		val concrete_drawer = (state: Array[Any]) =>
 		{

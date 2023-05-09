@@ -5,12 +5,13 @@ import javax.imageio.ImageIO
 import scala.collection.immutable.List
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-
-import Model._
 import Games._
 
 
 object App {
+
+	private val (sudoku, ttt, queens, connect4, chess, checkers) = (0,1,2,3,4,5)
+
 	def main(args: Array[String]): Unit = {
 
 		// Helper Functions
@@ -38,7 +39,7 @@ object App {
 		val panelsList = List[Component](homepanel, gamePanel)
 
 		// Home Page
-		val img_selectgame = new JLabel(new ImageIcon(ImageIO.read(new File("src/main/static/select-game.png"))));
+		val img_selectgame = new JLabel(new ImageIcon(ImageIO.read(new File("src/main/static/select-game.png"))))
 		img_selectgame.setBounds(176, 40, 861, 92)
 		homepanel.add(img_selectgame)
 
@@ -73,8 +74,7 @@ object App {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(gamePanel)
 				clearBoard()
-				setGameTitle("Tic Tac Toe")
-				TicTacToe.setup(board)
+				start_game(ttt)
 			}
 		})
 
@@ -82,8 +82,7 @@ object App {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(gamePanel)
 				clearBoard()
-				setGameTitle("Connect 4")
-				Connect.setup(board)
+				start_game(connect4)
 			}
 		})
 
@@ -91,8 +90,7 @@ object App {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(gamePanel)
 				clearBoard()
-				setGameTitle("Checkers")
-				Checkers.setup(board)
+				start_game(checkers)
 			}
 		})
 
@@ -100,8 +98,7 @@ object App {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(gamePanel)
 				clearBoard()
-				setGameTitle("Chess")
-				Chess.setup(board)
+				start_game(chess)
 			}
 		})
 
@@ -109,8 +106,7 @@ object App {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(gamePanel)
 				clearBoard()
-				setGameTitle("8 Queens")
-				Queens.setup(board)
+				start_game(queens)
 			}
 		})
 
@@ -118,8 +114,7 @@ object App {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(gamePanel)
 				clearBoard()
-				setGameTitle("Sudoku")
-				Sudoku.setup(board)
+				start_game(sudoku)
 			}
 		})
 
@@ -148,6 +143,21 @@ object App {
 			board.removeAll()
 			board.revalidate()
 			board.repaint()
+		}
+
+		def start_game(game: Int): Unit = {
+			val (controller, drawer, title) = game match {
+				case checkers => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
+				case sudoku => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
+				case ttt => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tick Tack Toe")
+				case queens => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
+				case chess => (Chess.ChessController, Chess.ChessDrawer, "Chess")
+				case connect4 => (Connect.ConnectController, Connect.ConnectDrawer, "Connect 4")
+
+			}
+			setGameTitle(title)
+			AbstractEngine.abstract_engine(controller, drawer)
+
 		}
 
 		// Main

@@ -18,22 +18,26 @@ class QueensGameState extends GameState {
 object Queens {
 
   def setup(panel: JPanel): Unit = {
-    var state = new QueensGameState()
-    QueensDrawer(state)
-    panel.setLayout(new GridLayout(state.rows, state.cols))
-    var buttons = Array.ofDim[JButton](state.rows, state.cols)
-    for (i <- 0 until state.rows) {
-      for (j <- 0 until state.cols) {
-        buttons(i)(j) = new JButton(state.board(i)(j).toString)
-        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
-        buttons(i)(j).setActionCommand(i.toString + j.toString)
-        if ((j+i+1) % 2 == 0) buttons(i)(j).setBackground(Color.DARK_GRAY)
-        panel.add(buttons(i)(j))
-      }
-    }
+//    var state = new QueensGameState()
+//    QueensDrawer(state)
+//    panel.setLayout(new GridLayout(state.rows, state.cols))
+//    var buttons = Array.ofDim[JButton](state.rows, state.cols)
+//    for (i <- 0 until state.rows) {
+//      for (j <- 0 until state.cols) {
+//        buttons(i)(j) = new JButton(state.board(i)(j).toString)
+//        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
+//        buttons(i)(j).setActionCommand(i.toString + j.toString)
+//        if ((j+i+1) % 2 == 0) buttons(i)(j).setBackground(Color.DARK_GRAY)
+//        panel.add(buttons(i)(j))
+//      }
+//    }
   }
 
-  private def QueensDrawer(CurrentState: QueensGameState): Unit = {
+  val QueensController = (input: String, CurrentState: Array[Any]) => {
+    new Array[Any](0)
+  }
+
+  val QueensDrawer = (CurrentState: Array[Any]) => {
 
   }
 
