@@ -18,6 +18,7 @@ object AbstractEngine
 			}
 			if (App.closeGame) break
 			var input: String = App.input
+			App.inputReady = false
 			state = concrete_controller(input, state)
 		}
 	}
