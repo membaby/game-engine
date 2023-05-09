@@ -12,6 +12,7 @@ object App {
 	private var engineThread: Thread = null
 	var inputReady: Boolean = false
 	var closeGame: Boolean = false
+	var input: String = ""
 
 	def main(args: Array[String]): Unit = {
 
@@ -71,6 +72,7 @@ object App {
 				override def actionPerformed(e: ActionEvent): Unit = {
 					if (e.getSource == user_input_1 && user_input_1.getText.nonEmpty) {
 						println(s"Text entered: ${user_input_1.getText}")
+						input = user_input_1.getText
 						inputReady = true
 					}
 				}

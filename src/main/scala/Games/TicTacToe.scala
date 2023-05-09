@@ -50,7 +50,7 @@ object TicTacToe {
   }
 
   val TicTacToeDrawer = (state: Array[Any]) => {
-    
+
   }
 
   private def get_init_state(): Array[Any] = {

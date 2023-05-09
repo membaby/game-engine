@@ -15,8 +15,7 @@ object AbstractEngine
 				Thread.sleep(16)
 			}
 			if (App.closeGame) break
-			//Get input from App text field
-			var input: String = ""
+			var input: String = App.input
 			state = concrete_controller(input, state)
 		}
 	}
@@ -40,8 +39,7 @@ object AbstractEngine
 	{
 		val concrete_drawer = (state: Array[Any]) =>
 		{
-			//Draw general info like Letters and numbers of the grid
-			//use game_drawer to draw the state
+			game_drawer(state)
 		}
 		return concrete_drawer
 	}
