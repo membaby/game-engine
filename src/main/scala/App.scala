@@ -10,8 +10,6 @@ import Games._
 
 object App {
 
-	private val (sudoku, ttt, queens, connect4, chess, checkers) = (0,1,2,3,4,5)
-
 	def main(args: Array[String]): Unit = {
 
 		// Helper Functions
@@ -43,15 +41,6 @@ object App {
 		img_selectgame.setBounds(176, 40, 861, 92)
 		homepanel.add(img_selectgame)
 
-		// Buttons
-		val gameNames = List("TicTacToe", "connect-4", "Checkers", "Chess", "Sudoku", "8Queens")
-		val buttonsList = gameNames.zipWithIndex.map { case (gameName, idx) =>
-			val button = new JLabel(new ImageIcon(ImageIO.read(new File(s"src/main/static/$gameName.png"))))
-			button.setBounds(39 + (362 + 15) * (idx % 3), 166 + (idx / 3) * 294, 362, 242)
-			button.setCursor(new Cursor(Cursor.HAND_CURSOR))
-			homepanel.add(button)
-		}
-
 		// Game Page
 		val btn_back = createButton(gamePanel, "src/main/static/arrow-left.png", 34, 10)
 		val btn_undo = createButton(gamePanel, "src/main/static/Undo.png", 935, 10)
@@ -68,55 +57,47 @@ object App {
 			label_gametitle.setText(title)
 		}
 
+//		val GUI_CONTROLS =
 
-
-		buttonsList(0).addMouseListener(new MouseAdapter {
-			override def mouseClicked(e: MouseEvent): Unit = {
-				setActivePanel(gamePanel)
-				clearBoard()
-				start_game(ttt)
+		def start_game(game: String): Unit = {
+			val (controller, drawer, title) = game match {
+				case "Checkers"  => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
+				case "Sudoku" 	 => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
+				case "TicTacToe" => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tick Tack Toe")
+				case "8Queens" 	 => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
+				case "Chess" 		 => (Chess.ChessController, Chess.ChessDrawer, "Chess")
+				case "connect-4" => (Connect.ConnectController, Connect.ConnectDrawer, "Connect 4")
 			}
-		})
+			setGameTitle(title)
+			AbstractEngine.abstract_engine(controller, drawer)
+		}
 
-		buttonsList(1).addMouseListener(new MouseAdapter {
-			override def mouseClicked(e: MouseEvent): Unit = {
-				setActivePanel(gamePanel)
-				clearBoard()
-				start_game(connect4)
-			}
-		})
+		def setActivePanel(panel: JPanel): Unit = {
+			panelsList.foreach(panel => panel.setVisible(false))
+			panel.setVisible(true)
+		}
 
-		buttonsList(2).addMouseListener(new MouseAdapter {
-			override def mouseClicked(e: MouseEvent): Unit = {
-				setActivePanel(gamePanel)
-				clearBoard()
-				start_game(checkers)
-			}
-		})
+		def clearBoard(): Unit = {
+			board.removeAll()
+			board.revalidate()
+			board.repaint()
+		}
 
-		buttonsList(3).addMouseListener(new MouseAdapter {
-			override def mouseClicked(e: MouseEvent): Unit = {
-				setActivePanel(gamePanel)
-				clearBoard()
-				start_game(chess)
-			}
-		})
-
-		buttonsList(5).addMouseListener(new MouseAdapter {
-			override def mouseClicked(e: MouseEvent): Unit = {
-				setActivePanel(gamePanel)
-				clearBoard()
-				start_game(queens)
-			}
-		})
-
-		buttonsList(4).addMouseListener(new MouseAdapter {
-			override def mouseClicked(e: MouseEvent): Unit = {
-				setActivePanel(gamePanel)
-				clearBoard()
-				start_game(sudoku)
-			}
-		})
+		// Buttons
+		val gameNames = List("TicTacToe", "connect-4", "Checkers", "Chess", "Sudoku", "8Queens")
+		val buttonsList = gameNames.zipWithIndex.map { case (gameName, idx) =>
+			val button = new JLabel(new ImageIcon(ImageIO.read(new File(s"src/main/static/$gameName.png"))))
+			button.setBounds(39 + (362 + 15) * (idx % 3), 166 + (idx / 3) * 294, 362, 242)
+			button.setCursor(new Cursor(Cursor.HAND_CURSOR))
+			homepanel.add(button)
+			button.addMouseListener(new MouseAdapter {
+				override def mouseClicked(e: MouseEvent): Unit = {
+					setActivePanel(gamePanel)
+					clearBoard()
+					start_game(gameName)
+				}
+			})
+		}
 
 		btn_back.addMouseListener(new MouseAdapter {
 			override def mouseClicked(e: MouseEvent): Unit = {
@@ -133,32 +114,6 @@ object App {
 			panel.setBounds(0, 0, 1200, 800)
 			frame.add(panel)
 		})
-
-		def setActivePanel(panel: JPanel): Unit = {
-			panelsList.foreach(panel => panel.setVisible(false))
-			panel.setVisible(true)
-		}
-
-		def clearBoard(): Unit = {
-			board.removeAll()
-			board.revalidate()
-			board.repaint()
-		}
-
-		def start_game(game: Int): Unit = {
-			val (controller, drawer, title) = game match {
-				case checkers => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
-				case sudoku => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
-				case ttt => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tick Tack Toe")
-				case queens => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
-				case chess => (Chess.ChessController, Chess.ChessDrawer, "Chess")
-				case connect4 => (Connect.ConnectController, Connect.ConnectDrawer, "Connect 4")
-
-			}
-			setGameTitle(title)
-			AbstractEngine.abstract_engine(controller, drawer)
-
-		}
 
 		// Main
 		setActivePanel(homepanel)
