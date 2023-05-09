@@ -1,19 +1,20 @@
 package Games
-import Model._
 import javax.swing._
-import java.awt.{GridLayout, Component}
-import javax.swing.{JPanel, JFrame, JLabel}
+import java.awt.{Component, GridLayout}
+import javax.swing.{JFrame, JLabel, JPanel}
 import scala.util.Random
+import scala.util.matching.Regex
 
 // Define a class that extends the GameState trait
-class SudokuGameState extends GameState {
-  // Override the abstract fields as desired
-  override var rows = 9
-  override var cols = 9
-  override var turn = 0
-  override var board = Array.ofDim[Char](rows, cols)
-  override var history: List[Array[Array[Char]]] = List(board)
-}
+//class SudokuGameState extends GameState {
+//  // Override the abstract fields as desired
+//  override var rows = 9
+//  override var cols = 9
+//  override var turn = 0
+//  override var board = Array.ofDim[Char](rows, cols)
+//  override var history: List[Array[Array[Char]]] = List(board)
+//  var originalNums: Array[Array[Boolean]]
+//}
 
 object Sudoku {
   type SudokuGrid = Array[Array[Int]]
@@ -35,13 +36,42 @@ object Sudoku {
   }
 
   val SudokuController = (input: String, state: Array[Any]) => {
-    new Array[Any](0)
+    var actualState = state
+    if (actualState == null) actualState = get_init_state()
+    val deletePattern : Regex = "delete [0-8][a-j]".r
+    val addPattern : Regex = "[0-8][a-j] [1-9]".r
+    if (deletePattern.matches(input)){
+      var board = state(3).asInstanceOf[Array[Array[Int]]]
+      val origNums = state(4).asInstanceOf[Array[Array[Boolean]]]
+      val (row, col) = (input.charAt(7) - '0', input.charAt(8) - 'a')
+      if (!origNums(row)(col) && board(row)(col) != 0){
+        board(row)(col) = 0
+      }
+      else{
+        //Invalid square to delete
+      }
+    }
+    else if (addPattern.matches(input)) {
+      val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
+      var board = state(3).asInstanceOf[Array[Array[Int]]]
+      if (board(row)(col) != 0) {
+        //Invalid square to add
+      }
+      else {
+        board(row)(col) = input.charAt(3) - '0'
+      }
+    }
+    else {
+      //Invalid input
+    }
+
+    actualState
   }
   val SudokuDrawer = (CurrentState: Array[Any]) => {
 
   }
 
-  private def generateSudokuGrid(): SudokuGrid = {
+  private def generateSudokuGrid(): Array[Array[Int]] = {
     val n = 9
     val m = math.sqrt(n).toInt
     val random = new Random()
@@ -86,5 +116,33 @@ object Sudoku {
     grid
   }
 
+  private def get_init_state(): Array[Any] = {
+    var rows = 9
+    var cols = 9
+    var turn = 0
+    var board = generateSudokuGrid()
+    var history = List(board)
+    var originalNums = Array.fill(9)(Array.fill(9)(true))
+    var state: Array[Any] = Array[Any](6)
+    //Hiding some numbers
+    val numOfHidden: Int = 30
+    var hidden = 0
+    while (hidden < numOfHidden){
+      var (row, col) = (Random.nextInt(9), Random.nextInt(9))
+      if (originalNums(row)(col) == true){
+        originalNums(row)(col) = false
+        board(row)(col) = 0
+        hidden += 1
+      }
+    }
+
+    state(0) = rows
+    state(1) = cols
+    state(2) = turn
+    state(3) = board
+    state(4) = originalNums
+    state(5) = history
+    return state
+  }
 
 }
