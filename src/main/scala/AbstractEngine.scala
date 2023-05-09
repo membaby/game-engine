@@ -7,12 +7,12 @@ object AbstractEngine
 		var state: Array[Any] = null
 		//Initialize abstract controller
 		val concrete_controller: (String, Array[Any]) => Array[Any] = abstract_controller(controller)
-		//Initialize abtract drawer
+		//Initialize abstract drawer
 		val concrete_drawer: Array[Any] => Unit = abstract_drawer(drawer)
 
 		while (true)
 		{
-			//pass state to drawer
+			drawer(state)
 			//Take input from user
 			//pass input and state to concrete controller
 		}
