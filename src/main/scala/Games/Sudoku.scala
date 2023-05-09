@@ -19,25 +19,25 @@ object Sudoku {
   type SudokuGrid = Array[Array[Int]]
 
   def setup(panel: JPanel): Unit = {
-    var state = new SudokuGameState()
-    state.board = generateSudokuGrid().map(_.map(_.toString.charAt(0)))
-    SudokuDrawer(state)
-    panel.setLayout(new GridLayout(state.rows, state.cols))
-    var buttons = Array.ofDim[JButton](state.rows, state.cols)
-    for (i <- 0 until state.rows) {
-      for (j <- 0 until state.cols) {
-        buttons(i)(j) = new JButton(state.board(i)(j).toString)
-        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
-        buttons(i)(j).setActionCommand(i.toString + j.toString)
-        panel.add(buttons(i)(j))
-      }
-    }
+//    var state = new SudokuGameState()
+//    state.board = generateSudokuGrid().map(_.map(_.toString.charAt(0)))
+//    SudokuDrawer(state)
+//    panel.setLayout(new GridLayout(state.rows, state.cols))
+//    var buttons = Array.ofDim[JButton](state.rows, state.cols)
+//    for (i <- 0 until state.rows) {
+//      for (j <- 0 until state.cols) {
+//        buttons(i)(j) = new JButton(state.board(i)(j).toString)
+//        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
+//        buttons(i)(j).setActionCommand(i.toString + j.toString)
+//        panel.add(buttons(i)(j))
+//      }
+//    }
   }
 
-  def SudokuController(input: String, state: GameState): GameState = {
-    return new SudokuGameState
+  val SudokuController = (input: String, state: Array[Any]) => {
+    new Array[Any](0)
   }
-  def SudokuDrawer(CurrentState: SudokuGameState): Unit = {
+  val SudokuDrawer = (CurrentState: Array[Any]) => {
 
   }
 
