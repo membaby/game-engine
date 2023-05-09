@@ -4,24 +4,9 @@ import java.awt.{Component, GridLayout}
 import javax.swing.{JFrame, JLabel, JPanel}
 import java.awt.Color
 import scala.util.matching.Regex
+import App._
 
 object Queens {
-
-  def setup(panel: JPanel): Unit = {
-//    var state = new QueensGameState()
-//    QueensDrawer(state)
-//    panel.setLayout(new GridLayout(state.rows, state.cols))
-//    var buttons = Array.ofDim[JButton](state.rows, state.cols)
-//    for (i <- 0 until state.rows) {
-//      for (j <- 0 until state.cols) {
-//        buttons(i)(j) = new JButton(state.board(i)(j).toString)
-//        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
-//        buttons(i)(j).setActionCommand(i.toString + j.toString)
-//        if ((j+i+1) % 2 == 0) buttons(i)(j).setBackground(Color.DARK_GRAY)
-//        panel.add(buttons(i)(j))
-//      }
-//    }
-  }
 
   val QueensController = (input: String, state: Array[Any]) => {
     var actualState = state
@@ -45,7 +30,7 @@ object Queens {
       }
     }
     else if (addPattern.matches(input)){
-      var board = state(3).asInstanceOf[Array[Array[Boolean]]]
+      var board = actualState(3).asInstanceOf[Array[Array[Boolean]]]
       val (row, col) = (input.charAt(0)-'0', input.charAt(1)-'a')
       var validQueen = true
       //Check column
@@ -65,7 +50,7 @@ object Queens {
       }
       if (validQueen){
         board(diagRow)(diagCol) = true
-        state(2) = state(2).asInstanceOf[Int] + 1
+        actualState(2) = actualState(2).asInstanceOf[Int] + 1
       }
       else{
         //Invalid place for queen
@@ -78,11 +63,39 @@ object Queens {
   }
 
   val QueensDrawer = (state: Array[Any]) => {
+      var gameState = state
+      if (gameState == null) {
+        gameState = get_init_state()
+        App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
+        var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
+        for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+          for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+            buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j).toString)
+            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 40))
+            App.board.add(buttons(i)(j))
+          }
+        }
+      } else {
+        gameState = state
+        val buttons = App.board.getComponents
+        for (i <- 0 until 3) {
+          for (j <- 0 until 3) {
+            val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
+            if (text == 32) buttons(i * 3 + j).asInstanceOf[JButton].setText(" ")
+            else if (text == 49) buttons(i * 3 + j).asInstanceOf[JButton].setText("X")
+            else if (text == 50) buttons(i * 3 + j).asInstanceOf[JButton].setText("O")
+            println("i=" + i + " j=" + j + " text=" + text)
+          }
+        }
 
+      }
+
+      App.board.revalidate()
+      App.board.repaint()
   }
 
   private def get_init_state(): Array[Any] ={
-    var state = Array[Any](5)
+    var state = new Array[Any](5)
     var (row, col, turn) = (8, 8, 0)
     var board: Array[Array[Boolean]] = Array.fill(8)(Array.fill(8)(false))
     var history = List(board)

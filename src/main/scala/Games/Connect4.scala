@@ -3,24 +3,10 @@ import javax.swing._
 import java.awt.{Component, GridLayout}
 import javax.swing.{JFrame, JLabel, JPanel}
 import scala.util.matching.Regex
+import App._
 
 
 object Connect4 {
-
-  def setup(panel: JPanel): Unit = {
-//    var state = new ConnectGameState()
-//    ConnectDrawer(state)
-//    panel.setLayout(new GridLayout(state.rows, state.cols))
-//    var buttons = Array.ofDim[JButton](state.rows, state.cols)
-//    for (i <- 0 until state.rows) {
-//      for (j <- 0 until state.cols) {
-//        buttons(i)(j) = new JButton(state.board(i)(j).toString)
-//        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
-//        buttons(i)(j).setActionCommand(i.toString + j.toString)
-//        panel.add(buttons(i)(j))
-//      }
-//    }
-  }
 
   val ConnectController = (input: String, state: Array[Any]) => {
     var actualState = state
@@ -49,11 +35,40 @@ object Connect4 {
   }
 
   val ConnectDrawer = (state: Array[Any]) => {
+    var gameState = state
+    if (gameState == null) {
+      gameState = get_init_state()
+      App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
+      var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).toString)
+          buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 40))
+          App.board.add(buttons(i)(j))
+        }
+      }
+    } else {
+      gameState = state
+      val buttons = App.board.getComponents
+      for (i <- 0 until 3) {
+        for (j <- 0 until 3) {
+          val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
+          if (text == 32) buttons(i * 3 + j).asInstanceOf[JButton].setText(" ")
+          else if (text == 49) buttons(i * 3 + j).asInstanceOf[JButton].setText("X")
+          else if (text == 50) buttons(i * 3 + j).asInstanceOf[JButton].setText("O")
+          println("i=" + i + " j=" + j + " text=" + text)
+        }
+      }
 
+    }
+
+    App.board.revalidate()
+    App.board.repaint()
   }
 
+
   private def get_init_state(): Array[Any] = {
-    var state = Array[Any](5)
+    var state = new Array[Any](5)
     val (row, col, turn) = (6,7,0)
     var board = Array.fill(6)(Array.fill(7)(' '))
     var history = List(board)
