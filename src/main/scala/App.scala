@@ -1,3 +1,5 @@
+package App
+
 import java.awt._
 import javax.swing._
 import java.io.File
@@ -13,6 +15,7 @@ object App {
 	var inputReady: Boolean = false
 	var closeGame: Boolean = false
 	var input: String = ""
+	var board: JPanel = null
 
 	def main(args: Array[String]): Unit = {
 
@@ -37,7 +40,7 @@ object App {
 		val frame: JFrame = new JFrame("Ultimate X - Game Engine")
 		val homepanel: JPanel = new JPanel(null)
 		val gamePanel: JPanel = new JPanel(null)
-		val board: JPanel = new JPanel(null)
+		board = new JPanel(null)
 		val panelsList = List[Component](homepanel, gamePanel)
 
 		// Home Page

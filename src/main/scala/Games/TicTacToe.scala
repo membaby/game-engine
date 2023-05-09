@@ -1,8 +1,7 @@
 package Games
-import Model._
+import App._
+import java.awt._
 import javax.swing._
-import java.awt.{GridLayout, Component}
-import javax.swing.{JPanel, JFrame, JLabel}
 
 
 // Define a class that extends the GameState trait
@@ -34,12 +33,12 @@ object TicTacToe {
 
   val TicTacToeController = (input: String, state: Array[Any]) => {
     var actualState: Array[Any] = state
+    if (actualState == null) {
+      actualState = get_init_state()
+    }
     if (input.length == 2 && input.charAt(0) <= '2' && input.charAt(0) >='0' && input.charAt(1) <= 'c' && input.charAt(1) >= 'a') {
       var row = input.charAt(0) - '0'
       var col = input.charAt(1) - 'a'
-      if (actualState == null){
-        actualState = get_init_state()
-      }
       var board = actualState(3).asInstanceOf[Array[Array[Char]]]
       if (board(row)(col) == 0) {
         var turn = actualState(2).asInstanceOf[Int]
@@ -50,6 +49,24 @@ object TicTacToe {
   }
 
   val TicTacToeDrawer = (state: Array[Any]) => {
+    println("TicTacToeDrawer")
+    var gameState = state
+    if (gameState == null) {
+      gameState = get_init_state()
+    }
+
+    App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
+    var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
+    for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+      for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+        buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).toString)
+        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 100))
+//        buttons(i)(j).setActionCommand(i.toString + j.toString)
+        App.board.add(buttons(i)(j))
+      }
+    }
+    App.board.revalidate()
+    App.board.repaint()
 
   }
 
@@ -58,8 +75,8 @@ object TicTacToe {
     state(0) = 3
     state(1) = 3
     state(2) = 0
-    state(3) = Array.ofDim[Char](3, 3)
-    state(4) = List(state(3).asInstanceOf[Array[Array[Char]]])
+    state(3) = Array.ofDim[Char](3, 3).map(_.map(_ => ' '))
+    state(4) = Array(state(3))
     return state
   }
 }
