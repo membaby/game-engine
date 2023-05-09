@@ -10,12 +10,12 @@ object AbstractEngine
 		//Initialize abstract drawer
 		val concrete_drawer: Array[Any] => Unit = abstract_drawer(drawer)
 
-		while (true)
-		{
-			drawer(state)
+//		while (true)
+//		{
+//			drawer(state)
 			//Take input from user
 			//pass input and state to concrete controller
-		}
+//		}
 	}
 
 
