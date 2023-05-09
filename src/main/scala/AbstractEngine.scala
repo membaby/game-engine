@@ -1,21 +1,24 @@
-
+import scala.util.control.Breaks.break
 
 object AbstractEngine
 {
 	def abstract_engine(controller: (String, Array[Any]) => Array[Any], drawer: Array[Any] => Unit) : Unit = 
 	{
 		var state: Array[Any] = null
-		//Initialize abstract controller
-		val concrete_controller: (String, Array[Any]) => Array[Any] = abstract_controller(controller)
-		//Initialize abstract drawer
-		val concrete_drawer: Array[Any] => Unit = abstract_drawer(drawer)
+		val concrete_controller = abstract_controller(controller)
+		val concrete_drawer = abstract_drawer(drawer)
 
-//		while (true)
-//		{
-//			drawer(state)
-			//Take input from user
-			//pass input and state to concrete controller
-//		}
+		while (true)
+		{
+			concrete_drawer(state)
+			while (!App.inputReady && !App.closeGame) {
+				Thread.sleep(16)
+			}
+			if (App.closeGame) break
+			//Get input from App text field
+			var input: String = ""
+			state = concrete_controller(input, state)
+		}
 	}
 
 
@@ -27,7 +30,7 @@ object AbstractEngine
 			//If not a valid general command then pass input and state to game_controller
 			//game_controller should show an error message if the input is invalid
 			//Return the new state that game_controller returns. 
-			new Array[Any](0)
+			game_controller(input, state)
 		}
 		return concrete_controller
 	}

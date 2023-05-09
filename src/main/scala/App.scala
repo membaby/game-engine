@@ -9,6 +9,10 @@ import Games._
 
 object App {
 
+	private var engineThread: Thread = null
+	var inputReady: Boolean = false
+	var closeGame: Boolean = false
+
 	def main(args: Array[String]): Unit = {
 
 		// Helper Functions
@@ -67,6 +71,7 @@ object App {
 				override def actionPerformed(e: ActionEvent): Unit = {
 					if (e.getSource == user_input_1 && user_input_1.getText.nonEmpty) {
 						println(s"Text entered: ${user_input_1.getText}")
+						inputReady = true
 					}
 				}
 			})
@@ -82,8 +87,12 @@ object App {
 				case "connect-4" => (Connect.ConnectController, Connect.ConnectDrawer, "Connect 4")
 			}
 			setGameTitle(title)
-			AbstractEngine.abstract_engine(controller, drawer)
-
+			engineThread = new Thread(new Runnable {
+				override def run(): Unit = AbstractEngine.abstract_engine(controller, drawer)
+			})
+			closeGame = false
+			inputReady = false
+			engineThread.start()
 			addActionListener(user_input_1, "A")
 			addActionListener(user_input_2, "B")
 		}
@@ -119,6 +128,7 @@ object App {
 		btn_back.addMouseListener(new MouseAdapter {
 			override def mouseClicked(e: MouseEvent): Unit = {
 				setActivePanel(homepanel)
+				closeGame = true
 			}
 		})
 
