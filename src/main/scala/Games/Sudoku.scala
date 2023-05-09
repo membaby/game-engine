@@ -5,16 +5,6 @@ import javax.swing.{JFrame, JLabel, JPanel}
 import scala.util.Random
 import scala.util.matching.Regex
 
-// Define a class that extends the GameState trait
-//class SudokuGameState extends GameState {
-//  // Override the abstract fields as desired
-//  override var rows = 9
-//  override var cols = 9
-//  override var turn = 0
-//  override var board = Array.ofDim[Char](rows, cols)
-//  override var history: List[Array[Array[Char]]] = List(board)
-//  var originalNums: Array[Array[Boolean]]
-//}
 
 object Sudoku {
   type SudokuGrid = Array[Array[Int]]
@@ -75,7 +65,10 @@ object Sudoku {
             if (board(y)(x) == num) validNum = false
           }
         }
-        if (validNum) board(row)(col) = num
+        if (validNum){
+          board(row)(col) = num
+          state(2) = state(2).asInstanceOf[Int] + 1
+        }
         else {
           //Invalid number to add
         }
