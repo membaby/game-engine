@@ -55,16 +55,35 @@ object Sudoku {
       val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
       var board = state(3).asInstanceOf[Array[Array[Int]]]
       if (board(row)(col) != 0) {
-        //Invalid square to add
+        //Invalid square to add to
       }
       else {
-        board(row)(col) = input.charAt(3) - '0'
+        val num = input.charAt(3) - '0'
+        //Check column
+        var validNum = true
+        for (x <- 0 to 8){
+          if (board(x)(col) == num) validNum = false
+        }
+        //Check row
+        for (y <- 0 to 8) {
+          if (board(row)(y) == num) validNum = false
+        }
+        //Check 3x3 grid
+        val (startRow, startCol) = (row/3 * 3, col/3 * 3)
+        for (y <- startRow to startRow+2){
+          for (x <- startCol to startCol+2){
+            if (board(y)(x) == num) validNum = false
+          }
+        }
+        if (validNum) board(row)(col) = num
+        else {
+          //Invalid number to add
+        }
       }
     }
     else {
       //Invalid input
     }
-
     actualState
   }
   val SudokuDrawer = (CurrentState: Array[Any]) => {
