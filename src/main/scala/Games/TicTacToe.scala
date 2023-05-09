@@ -3,38 +3,14 @@ import App._
 import java.awt._
 import javax.swing._
 
-
-// Define a class that extends the GameState trait
-//class TicTacToeGameState extends GameState {
-//  // Override the abstract fields as desired
-//  override var rows = 3
-//  override var cols = 3
-//  override var board = Array.ofDim[Char](rows, cols)
-//  override var turn = 0
-//  override var history: List[Array[Array[Char]]] = List(board)
-//}
-
 object TicTacToe {
 
-  def setup(panel: JPanel): Unit = {
-//    var state = new TicTacToeGameState()
-//    TicTacToeDrawer(state)
-//    panel.setLayout(new GridLayout(state.rows, state.cols))
-//    var buttons = Array.ofDim[JButton](state.rows, state.cols)
-//    for (i <- 0 until state.rows) {
-//      for (j <- 0 until state.cols) {
-//        buttons(i)(j) = new JButton(state.board(i)(j).toString)
-//        buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 100))
-//        buttons(i)(j).setActionCommand(i.toString + j.toString)
-//        panel.add(buttons(i)(j))
-//      }
-//    }
-  }
-
-  val TicTacToeController = (input: String, state: Array[Any]) => {
+  val TicTacToeController = (input: String, state: Array[Any]) => Array[Any] {
     var actualState: Array[Any] = state
     if (actualState == null) {
       actualState = get_init_state()
+    } else {
+      actualState = actualState(0).asInstanceOf[Array[Any]]
     }
     if (input.length == 2 && input.charAt(0) <= '2' && input.charAt(0) >='0' && input.charAt(1) <= 'c' && input.charAt(1) >= 'a') {
       var row = input.charAt(0) - '0'
@@ -46,6 +22,7 @@ object TicTacToe {
         if (turn%2 == 0) res = '1'
         else res = '2'
         board(row)(col) = res
+        actualState(2) = actualState(2).asInstanceOf[Int] + 1
       }
     }
     actualState
@@ -66,19 +43,21 @@ object TicTacToe {
         }
       }
     } else {
+      gameState = state(0).asInstanceOf[Array[Any]]
       val buttons = App.board.getComponents
-      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
-        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-          println("i=" + i + " j=" + j + " < " + gameState(3).asInstanceOf[Array[Array[Char]]](i)(j) + " >")
+      for (i <- 0 until 3) {
+        for (j <- 0 until 3) {
+          val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
+          if (text == 32) buttons(i*3 + j).asInstanceOf[JButton].setText(" ")
+          else if (text == 49) buttons(i*3 + j).asInstanceOf[JButton].setText("X")
+          else if (text == 50) buttons(i*3 + j).asInstanceOf[JButton].setText("O")
+          println("i="+i+" j="+j+" text="+text)
         }
       }
     }
 
-
-
     App.board.revalidate()
     App.board.repaint()
-
   }
 
   private def get_init_state(): Array[Any] = {
