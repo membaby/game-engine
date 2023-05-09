@@ -34,11 +34,14 @@ object Sudoku {
     }
   }
 
-  private def SudokuDrawer(CurrentState: SudokuGameState): Unit = {
+  def SudokuController(input: String, state: GameState): GameState = {
+    return new SudokuGameState
+  }
+  def SudokuDrawer(CurrentState: SudokuGameState): Unit = {
 
   }
 
-  def generateSudokuGrid(): SudokuGrid = {
+  private def generateSudokuGrid(): SudokuGrid = {
     val n = 9
     val m = math.sqrt(n).toInt
     val random = new Random()

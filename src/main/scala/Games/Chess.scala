@@ -33,7 +33,11 @@ object Chess {
     }
   }
 
-  private def ChessDrawer(CurrentState: ChessGameState): Unit = {
+  def ChessController(input: String, CurrentState: GameState): GameState = {
+    return new ChessGameState
+  }
+
+  def ChessDrawer(CurrentState: ChessGameState): Unit = {
 
   }
 

@@ -32,7 +32,11 @@ object TicTacToe {
     }
   }
 
-  private def TicTacToeDrawer(CurrentState: TicTacToeGameState): Unit = {
+  def TicTacToeController(input: String, state: GameState): GameState = {
+    return new TicTacToeGameState
+  }
+
+  def TicTacToeDrawer(state: GameState): Unit = {
 
   }
 

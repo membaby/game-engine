@@ -33,7 +33,11 @@ object Queens {
     }
   }
 
-  private def QueensDrawer(CurrentState: QueensGameState): Unit = {
+  def QueensController(input: String, CurrentState: GameState): GameState = {
+    return new QueensGameState
+  }
+
+  def QueensDrawer(CurrentState: QueensGameState): Unit = {
 
   }
 

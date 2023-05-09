@@ -33,7 +33,11 @@ object Checkers {
     }
   }
 
-  private def CheckersDrawer(CurrentState: CheckersGameState): Unit = {
+  def CheckersController(input: String, state: GameState): GameState = {
+    return new CheckersGameState
+  }
+
+  def CheckersDrawer(CurrentState: GameState): Unit = {
 
   }
 

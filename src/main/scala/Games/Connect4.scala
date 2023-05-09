@@ -31,7 +31,11 @@ object Connect {
     }
   }
 
-  private def ConnectDrawer(CurrentState: ConnectGameState): Unit = {
+  def ConnectController(input: String, CurrentState: GameState): GameState = {
+    return new ConnectGameState
+  }
+
+  def ConnectDrawer(CurrentState: ConnectGameState): Unit = {
 
   }
 
