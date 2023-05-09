@@ -40,9 +40,12 @@ object TicTacToe {
       var row = input.charAt(0) - '0'
       var col = input.charAt(1) - 'a'
       var board = actualState(3).asInstanceOf[Array[Array[Char]]]
-      if (board(row)(col) == 0) {
+      if (board(row)(col) == ' ') {
         var turn = actualState(2).asInstanceOf[Int]
-        board(row)(col) = (turn % 2).asInstanceOf[Char]
+        var res = '0'
+        if (turn%2 == 0) res = '1'
+        else res = '2'
+        board(row)(col) = res
       }
     }
     actualState
@@ -83,7 +86,7 @@ object TicTacToe {
     state(0) = 3
     state(1) = 3
     state(2) = 0
-    state(3) = Array.ofDim[Char](3, 3).map(_.map(_ => '0'))
+    state(3) = Array.ofDim[Char](3, 3).map(_.map(_ => ' '))
     state(4) = Array(state(3))
     return state
   }
