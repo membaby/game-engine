@@ -13,54 +13,56 @@ object Sudoku {
   val SudokuController = (input: String, state: Array[Any]) => {
     var actualState = state
     if (actualState == null) actualState = get_init_state()
-    val deletePattern : Regex = "delete [0-8][a-j]".r
-    val addPattern : Regex = "[0-8][a-j] [1-9]".r
-    if (deletePattern.matches(input)){
-      var board = state(3).asInstanceOf[Array[Array[Int]]]
-      val origNums = state(4).asInstanceOf[Array[Array[Boolean]]]
-      val (row, col) = (input.charAt(7) - '0', input.charAt(8) - 'a')
-      if (!origNums(row)(col) && board(row)(col) != 0){
-        board(row)(col) = 0
-      }
-      else{
-        //Invalid square to delete
-      }
-    }
-    else if (addPattern.matches(input)) {
-      val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
-      var board = actualState(3).asInstanceOf[Array[Array[Int]]]
-      if (board(row)(col) != 0) {
-        //Invalid square to add to
-      }
-      else {
-        val num = input.charAt(3) - '0'
-        //Check column
-        var validNum = true
-        for (x <- 0 to 8){
-          if (board(x)(col) == num) validNum = false
-        }
-        //Check row
-        for (y <- 0 to 8) {
-          if (board(row)(y) == num) validNum = false
-        }
-        //Check 3x3 grid
-        val (startRow, startCol) = (row/3 * 3, col/3 * 3)
-        for (y <- startRow to startRow+2){
-          for (x <- startCol to startCol+2){
-            if (board(y)(x) == num) validNum = false
-          }
-        }
-        if (validNum){
-          board(row)(col) = num
-          state(2) = state(2).asInstanceOf[Int] + 1
+    else{
+      val deletePattern : Regex = "delete [0-8][a-j]".r
+      val addPattern: Regex = "[0-8][a-j] [1-9]".r
+      if (deletePattern.matches(input)) {
+        var board = state(3).asInstanceOf[Array[Array[Int]]]
+        val origNums = state(4).asInstanceOf[Array[Array[Boolean]]]
+        val (row, col) = (input.charAt(7) - '0', input.charAt(8) - 'a')
+        if (!origNums(row)(col) && board(row)(col) != 0) {
+          board(row)(col) = 0
         }
         else {
-          //Invalid number to add
+          //Invalid square to delete
         }
       }
-    }
-    else {
-      //Invalid input
+      else if (addPattern.matches(input)) {
+        val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
+        var board = actualState(3).asInstanceOf[Array[Array[Int]]]
+        if (board(row)(col) != 0) {
+          //Invalid square to add to
+        }
+        else {
+          val num = input.charAt(3) - '0'
+          //Check column
+          var validNum = true
+          for (x <- 0 to 8) {
+            if (board(x)(col) == num) validNum = false
+          }
+          //Check row
+          for (y <- 0 to 8) {
+            if (board(row)(y) == num) validNum = false
+          }
+          //Check 3x3 grid
+          val (startRow, startCol) = (row / 3 * 3, col / 3 * 3)
+          for (y <- startRow to startRow + 2) {
+            for (x <- startCol to startCol + 2) {
+              if (board(y)(x) == num) validNum = false
+            }
+          }
+          if (validNum) {
+            board(row)(col) = num
+            state(2) = state(2).asInstanceOf[Int] + 1
+          }
+          else {
+            //Invalid number to add
+          }
+        }
+      }
+      else {
+        //Invalid input
+      }
     }
     actualState
   }
@@ -97,11 +99,19 @@ object Sudoku {
     App.board.repaint()
   }
 
-  private def get_init_state(): Array[Any] = {
+  def get_init_state(): Array[Any] = {
     val rows = 9
     val cols = 9
     val turn = 0
     val board = SudokuGenerator.generateSudoku()
+    println("Generated Board")
+    for (i <- 0 to 8){
+      for (j <- 0 to 8){
+        printf("%5d", board(i)(j))
+      }
+      println()
+    }
+    println()
     val history = List(board)
     var originalNums = Array.fill(9)(Array.fill(9)(true))
     var state = new Array[Any](6)

@@ -8,7 +8,14 @@ object Connect4Debugger {
   }
 
   val debugDrawer = (state: Array[Any]) =>{
+    val (rows, cols) = (state(0).asInstanceOf[Int], state(1).asInstanceOf[Int])
     val board = state(3).asInstanceOf[Array[Array[Char]]]
-    for ()
+    for (i <- 0 to rows) {
+      for (j <- 0 to cols) {
+        printf("%5d", board(i)(j))
+      }
+      println()
+    }
+    println()
   }
 }

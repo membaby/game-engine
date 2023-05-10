@@ -43,7 +43,7 @@ object Checkers {
             //Invalid Source
           }
           else {
-            var possibleDests = Array[(Int, Int)](4)
+            var possibleDests = new Array[(Int, Int)](4)
             if (board(srcRow-1)(srcCol-1) == ' ') possibleDests(0) = (srcRow-1, srcCol-1)
             else if (board(srcRow-2)(srcCol-2) == ' ') possibleDests(1) = (srcRow-2, srcCol-2)
             if (board(srcRow - 1)(srcCol + 1) == ' ') possibleDests(2) = (srcRow - 1, srcCol + 1)

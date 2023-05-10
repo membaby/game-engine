@@ -9,20 +9,24 @@ object TicTacToe {
     var actualState: Array[Any] = state
     if (actualState == null) {
       actualState = get_init_state()
-    } else {
-      actualState = actualState(0).asInstanceOf[Array[Any]]
     }
-    if (input.length == 2 && input.charAt(0) <= '2' && input.charAt(0) >='0' && input.charAt(1) <= 'c' && input.charAt(1) >= 'a') {
-      var row = input.charAt(0) - '0'
-      var col = input.charAt(1) - 'a'
-      var board = actualState(3).asInstanceOf[Array[Array[Char]]]
-      if (board(row)(col) == ' ') {
-        var turn = actualState(2).asInstanceOf[Int]
-        var res = '0'
-        if (turn%2 == 0) res = '1'
-        else res = '2'
-        board(row)(col) = res
-        actualState(2) = actualState(2).asInstanceOf[Int] + 1
+    else {
+      val inputPattern = "[0-2][a-c]".r
+      if (inputPattern.matches(input)) {
+        var row = input.charAt(0) - '0'
+        var col = input.charAt(1) - 'a'
+        var board = actualState(3).asInstanceOf[Array[Array[Char]]]
+        if (board(row)(col) == ' ') {
+          var turn = actualState(2).asInstanceOf[Int]
+          var res = '0'
+          if (turn % 2 == 0) res = '1'
+          else res = '2'
+          board(row)(col) = res
+          actualState(2) = actualState(2).asInstanceOf[Int] + 1
+        }
+      }
+      else{
+        //Invalid input
       }
     }
     actualState

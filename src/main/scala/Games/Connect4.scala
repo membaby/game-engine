@@ -11,25 +11,27 @@ object Connect4 {
   val ConnectController = (input: String, state: Array[Any]) => {
     var actualState = state
     if (actualState == null) actualState = get_init_state()
-    val inputPattern: Regex = "[a-g]".r
-    if (inputPattern.matches(input)){
-      val col = input.charAt(0)-'a'
-      val board = state(3).asInstanceOf[Array[Array[Char]]]
-      if (board(0)(col) == ' '){
-        var nextRow = 5
-        while (board(nextRow)(col) != ' ') nextRow -= 1
-        var res = '0'
-        if (state(2).asInstanceOf[Int]%2 == 0) res = '1'
-        else res = '2'
-        board(nextRow)(col) = res
-        state(2) = state(2).asInstanceOf[Int] + 1
-      }
-      else{
-        //Full column
-      }
-    }
     else{
-      //Invalid Input
+      val inputPattern: Regex = "[a-g]".r
+      if (inputPattern.matches(input)) {
+        val col = input.charAt(0) - 'a'
+        val board = state(3).asInstanceOf[Array[Array[Char]]]
+        if (board(0)(col) == ' ') {
+          var nextRow = 5
+          while (board(nextRow)(col) != ' ') nextRow -= 1
+          var res = '0'
+          if (state(2).asInstanceOf[Int] % 2 == 0) res = '1'
+          else res = '2'
+          board(nextRow)(col) = res
+          state(2) = state(2).asInstanceOf[Int] + 1
+        }
+        else {
+          //Full column
+        }
+      }
+      else {
+        //Invalid Input
+      }
     }
     actualState
   }
