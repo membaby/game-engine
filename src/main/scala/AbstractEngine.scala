@@ -9,7 +9,7 @@ object AbstractEngine
 		var state: Array[Any] = null
 		val concrete_controller = abstract_controller(controller)
 		val concrete_drawer = abstract_drawer(drawer)
-
+		state = concrete_controller("", null)
 		while (true)
 		{
 			concrete_drawer(state)
