@@ -1,6 +1,6 @@
 package Games
 import javax.swing._
-import java.awt.{Component, GridLayout}
+import java.awt.{Color, Component, GridLayout}
 import javax.swing.{JFrame, JLabel, JPanel}
 import scala.util.Random
 import scala.util.matching.Regex
@@ -14,12 +14,12 @@ object Sudoku {
     var actualState = state
     if (actualState == null) actualState = get_init_state()
     else{
-      val deletePattern : Regex = "delete [0-8][a-j]".r
+      val deletePattern : Regex = "del [0-8][a-j]".r
       val addPattern: Regex = "[0-8][a-j] [1-9]".r
       if (deletePattern.matches(input)) {
         var board = state(3).asInstanceOf[Array[Array[Int]]]
         val origNums = state(4).asInstanceOf[Array[Array[Boolean]]]
-        val (row, col) = (input.charAt(7) - '0', input.charAt(8) - 'a')
+        val (row, col) = (input.charAt(4) - '0', input.charAt(5) - 'a')
         if (!origNums(row)(col) && board(row)(col) != 0) {
           board(row)(col) = 0
         }
@@ -68,16 +68,23 @@ object Sudoku {
   }
   val SudokuDrawer = (CurrentState: Array[Any]) => {
     var gameState = CurrentState
-    if (gameState == null) {
-      gameState = get_init_state()
+    if (App.board.getComponentCount == 0) {
       App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
       var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
       for (i <- 0 until gameState(0).asInstanceOf[Int]) {
         for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-          if (gameState(3).asInstanceOf[Array[Array[Int]]](i)(j) == 0) buttons(i)(j) = new JButton
-          else buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Int]]](i)(j).toString)
-          println(gameState(3).asInstanceOf[Array[Array[Int]]](i)(j).toString)
-          buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 40))
+          buttons(i)(j) = new JButton(i.toString + (97 + j).toChar)
+          if (gameState(3).asInstanceOf[Array[Array[Int]]](i)(j) == 0) {
+            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
+            buttons(i)(j).setForeground(Color.GRAY);
+          } else {
+            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 30))
+            buttons(i)(j).setText(gameState(3).asInstanceOf[Array[Array[Int]]](i)(j).toString)
+          }
+          if (i % 3 == 0 && i != 0 && (j % 3 == 2 && j != 0)  && j != 8) buttons(i)(j).setBorder(BorderFactory.createMatteBorder(5, 1, 1, 5, Color.BLACK))
+          else if (i % 3 == 0 && i != 0) buttons(i)(j).setBorder(BorderFactory.createMatteBorder(5, 1, 1, 1, Color.BLACK))
+          else if (j % 3 == 2 && j != 0 && !(i % 3 == 0 && i != 0) && j != 8) buttons(i)(j).setBorder(BorderFactory.createMatteBorder(1, 1, 1, 5, Color.BLACK))
+          else buttons(i)(j).setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK))
           App.board.add(buttons(i)(j))
         }
       }
@@ -87,9 +94,16 @@ object Sudoku {
       for (i <- 0 until 9) {
         for (j <- 0 until 9) {
           val text = gameState(3).asInstanceOf[Array[Array[Int]]](i)(j)
-          if (text.toString == "0") buttons(i * 3 + j).asInstanceOf[JButton].setText("")
-          else buttons(i * 3 + j).asInstanceOf[JButton].setText(text.toString)
-          println("i=" + i + " j=" + j + " text=" + text)
+          val button = buttons(i* gameState(1).asInstanceOf[Int] + j)
+          if (text.toString != "0") {
+            button.asInstanceOf[JButton].setText(text.toString)
+            button.setFont(new java.awt.Font("Arial", 1, 30))
+            button.setForeground(Color.BLACK);
+          } else {
+            button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
+            button.setFont(new java.awt.Font("Arial", 1, 15))
+            button.setForeground(Color.GRAY);
+          }
         }
       }
 
@@ -103,7 +117,7 @@ object Sudoku {
     val rows = 9
     val cols = 9
     val turn = 0
-    val board = SudokuGenerator.generateSudoku()
+    val board = SudokuSolver.generateSolvedPuzzle()
     println("Generated Board")
     for (i <- 0 to 8){
       for (j <- 0 to 8){
@@ -138,51 +152,65 @@ object Sudoku {
 
 }
 
-object SudokuGenerator {
-  // Define the size of the Sudoku grid
-  val n = 9
-  val m = math.sqrt(n).toInt
+import scala.util.Random
 
-  // Define a random number generator
-  val random = new Random()
+object SudokuSolver {
+  // Define a 9x9 grid as a two-dimensional array of integers
+  type Grid = Array[Array[Int]]
 
-  // Define a function to get the possible values for a cell
-  def possibleValues(grid: Array[Array[Int]], i: Int, j: Int): Seq[Int] = {
-    val row = grid(i)
-    val col = grid.map(_(j))
-    val box = for {
-      x <- 0 until m
-      y <- 0 until m
-    } yield grid((i / m) * m + x)((j / m) * m + y)
-    (1 to n).diff(row ++ col ++ box)
-  }
-
-  // Define a function to recursively fill the grid
-  def fillGrid(grid: Array[Array[Int]], i: Int, j: Int): Boolean = {
-    if (i == n) {
-      true
-    } else if (j == n) {
-      fillGrid(grid, i + 1, 0)
-    } else if (grid(i)(j) != 0) {
-      fillGrid(grid, i, j + 1)
-    } else {
-      val values = possibleValues(grid, i, j)
-      if (values.isEmpty) {
-        false
-      } else {
-        val shuffledValues = random.shuffle(values)
-        shuffledValues.exists { value =>
-          grid(i)(j) = value
-          fillGrid(grid, i, j + 1)
-        }
-      }
+  // Function to print a grid
+  def printGrid(grid: Grid): Unit = {
+    for (row <- grid) {
+      println(row.mkString(" "))
     }
   }
 
-  // Define a function to generate a Sudoku puzzle
-  def generateSudoku(): Array[Array[Int]] = {
-    val grid = Array.fill(n)(Array.fill(n)(0))
-    fillGrid(grid, 0, 0)
-    grid
+  // Function to check if a value can be placed in a given position
+  def isValid(grid: Grid, row: Int, col: Int, value: Int): Boolean = {
+    // Check row
+    for (i <- 0 until 9) {
+      if (grid(row)(i) == value) return false
+    }
+
+    // Check column
+    for (i <- 0 until 9) {
+      if (grid(i)(col) == value) return false
+    }
+
+    // Check box
+    val boxRow = row / 3 * 3
+    val boxCol = col / 3 * 3
+    for (i <- boxRow until boxRow + 3) {
+      for (j <- boxCol until boxCol + 3) {
+        if (grid(i)(j) == value) return false
+      }
+    }
+
+    true
+  }
+
+  // Function to solve a Sudoku puzzle using backtracking
+  def solve(grid: Grid): Option[Grid] = {
+    for (row <- 0 until 9; col <- 0 until 9) {
+      if (grid(row)(col) == 0) {
+        for (value <- Random.shuffle(1 to 9)) {
+          if (isValid(grid, row, col, value)) {
+            grid(row)(col) = value
+            solve(grid) match {
+              case Some(solvedGrid) => return Some(solvedGrid)
+              case None => grid(row)(col) = 0
+            }
+          }
+        }
+        return None
+      }
+    }
+    Some(grid)
+  }
+
+  // Function to generate a solved Sudoku puzzle
+  def generateSolvedPuzzle(): Grid = {
+    val emptyGrid = Array.fill(9, 9)(0)
+    solve(emptyGrid).get
   }
 }

@@ -15,10 +15,10 @@ object Queens {
     }
     else{
       val addPattern: Regex = "[0-7][a-h]".r
-      val deletePattern: Regex = "delete [a-h]".r
+      val deletePattern: Regex = "del [a-h]".r
       if (deletePattern.matches(input)) {
         var board = state(3).asInstanceOf[Array[Array[Boolean]]]
-        val col = input.charAt(7) - 'a'
+        val col = input.charAt(4) - 'a'
         var queenAt = -1
         for (row <- 0 to 7) {
           if (board(row)(col) == true) queenAt = row
@@ -50,7 +50,7 @@ object Queens {
           diagRow += 1
         }
         if (validQueen) {
-          board(diagRow)(diagCol) = true
+          board(diagRow-1)(diagCol-1) = true
           actualState(2) = actualState(2).asInstanceOf[Int] + 1
         }
         else {
@@ -66,30 +66,33 @@ object Queens {
 
   val QueensDrawer = (state: Array[Any]) => {
       var gameState = state
-      if (gameState == null) {
+      if (App.board.getComponentCount == 0) {
         gameState = get_init_state()
         App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
         var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
         for (i <- 0 until gameState(0).asInstanceOf[Int]) {
           for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-            buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j).toString)
-            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 40))
+            buttons(i)(j) = new JButton()
+            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
+            buttons(i)(j).setText(i.toString + (97+j).toChar)
+            buttons(i)(j).setForeground(Color.GRAY)
             App.board.add(buttons(i)(j))
           }
         }
       } else {
         gameState = state
         val buttons = App.board.getComponents
-        for (i <- 0 until 3) {
-          for (j <- 0 until 3) {
-            val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
-            if (text == 32) buttons(i * 3 + j).asInstanceOf[JButton].setText(" ")
-            else if (text == 49) buttons(i * 3 + j).asInstanceOf[JButton].setText("X")
-            else if (text == 50) buttons(i * 3 + j).asInstanceOf[JButton].setText("O")
-            println("i=" + i + " j=" + j + " text=" + text)
+        for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+          for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+            val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
+            if (gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j)) {
+              button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/queen.png"))
+              button.asInstanceOf[JButton].setText("")
+            }
+
+            println(i, j, gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j))
           }
         }
-
       }
 
       App.board.revalidate()

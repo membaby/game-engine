@@ -1,9 +1,11 @@
 package Games
 import javax.swing._
-import java.awt.{Component, GridLayout}
+import java.awt.{Color, Component, GridLayout}
 import javax.swing.{JFrame, JLabel, JPanel}
 import scala.util.matching.Regex
 import App._
+
+import scala.util.control.Breaks._
 
 
 object Connect4 {
@@ -29,39 +31,60 @@ object Connect4 {
           //Full column
         }
       }
-      else {
-        //Invalid Input
-      }
+      else if ("del [a-g]".r.matches(input)) {
+        var col = input.charAt(4) - 'a'
+        var board = actualState(3).asInstanceOf[Array[Array[Char]]]
+        breakable {
+          for (i <- 0 until 6) {
+            if (board(i)(col) != ' ') {
+              board(i)(col) = ' '
+              break
+            }
+          }
+        }
+        actualState(2) = actualState(2).asInstanceOf[Int] + 1
+        }
     }
     actualState
   }
 
   val ConnectDrawer = (state: Array[Any]) => {
-    var gameState = state
-    if (gameState == null) {
+    var gameState = state.asInstanceOf[Array[Any]]
+    if (App.board.getComponentCount == 0) {
       gameState = get_init_state()
       App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
       var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
       for (i <- 0 until gameState(0).asInstanceOf[Int]) {
         for (j <- 0 until gameState(1).asInstanceOf[Int]) {
           buttons(i)(j) = new JButton(gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).toString)
-          buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 40))
+          buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
+          buttons(i)(j).setText((97 + j).toChar.toString)
+          buttons(i)(j).setForeground(Color.GRAY);
           App.board.add(buttons(i)(j))
         }
       }
     } else {
       gameState = state
       val buttons = App.board.getComponents
-      for (i <- 0 until 3) {
-        for (j <- 0 until 3) {
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
           val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
-          if (text == 32) buttons(i * 3 + j).asInstanceOf[JButton].setText(" ")
-          else if (text == 49) buttons(i * 3 + j).asInstanceOf[JButton].setText("X")
-          else if (text == 50) buttons(i * 3 + j).asInstanceOf[JButton].setText("O")
-          println("i=" + i + " j=" + j + " text=" + text)
+          if (text == 49){
+            button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/red-circle.png"))
+            button.asInstanceOf[JButton].setText("")
+          }
+          else if (text == 50){
+            button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/blue-circle.png"))
+            button.asInstanceOf[JButton].setText("")
+          } else {
+            if (button.asInstanceOf[JButton].getText.length != 1) {
+              button.asInstanceOf[JButton].setText("")
+              button.asInstanceOf[JButton].setIcon(null)
+            }
+          }
         }
       }
-
     }
 
     App.board.revalidate()

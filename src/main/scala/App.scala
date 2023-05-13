@@ -50,20 +50,17 @@ object App {
 
 		// Game Page
 		val btn_back = createButton(gamePanel, "src/main/static/arrow-left.png", 34, 10)
-		val btn_undo = createButton(gamePanel, "src/main/static/Undo.png", 935, 10)
-		val btn_redo = createButton(gamePanel, "src/main/static/Redo.png", 1050, 10)
-		val user_input_1 = createTextField(gamePanel, 34, 680)
-		val user_input_2 = createTextField(gamePanel, 200, 680)
+		val btn_act  = new JButton("Go")
+		btn_act.setBounds(200, 680, 150, 50)
+		gamePanel.add(btn_act)
+		val user_input_1 = createTextField(gamePanel, 38, 680)
 
 		val label_gametitle = new JLabel()
 		label_gametitle.setBounds(160, 10, 1115, 84)
 		label_gametitle.setFont(new Font("Arial", Font.BOLD, 50))
 		gamePanel.add(label_gametitle)
 
-		def setGameTitle(title: String): Unit = {
-			label_gametitle.setText(title)
-		}
-
+		def setGameTitle(title: String): Unit = label_gametitle.setText(title)
 
 		def addActionListener(field: JTextField, func: String): Unit = {
 			// Remove all previous action listeners
@@ -77,6 +74,7 @@ object App {
 						println(s"Text entered: ${user_input_1.getText}")
 						input = user_input_1.getText
 						inputReady = true
+						user_input_1.setText("")
 					}
 				}
 			})
@@ -84,9 +82,9 @@ object App {
 
 		def start_game(game: String): Unit = {
 			val (controller, drawer, title) = game match {
-//				case "Checkers"  => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
+				case "Checkers"  => (Checkers.CheckersController, Checkers.CheckersDrawer, "Checkers")
 				case "Sudoku" 	 => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
-				case "TicTacToe" => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tick Tack Toe")
+				case "TicTacToe" => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tic Tac Toe")
 				case "8Queens" 	 => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
 //				case "Chess" 		 => (Chess.ChessController, Chess.ChessDrawer, "Chess")
 				case "connect-4" => (Connect4.ConnectController, Connect4.ConnectDrawer, "Connect 4")
@@ -99,7 +97,6 @@ object App {
 			inputReady = false
 			engineThread.start()
 			addActionListener(user_input_1, "A")
-			addActionListener(user_input_2, "B")
 		}
 
 
