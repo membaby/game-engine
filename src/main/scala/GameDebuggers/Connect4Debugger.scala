@@ -2,7 +2,6 @@ package GameDebuggers
 
 object Connect4Debugger {
   def main(args: Array[String]): Unit = {
-
     val controller = Games.Connect4.ConnectController
     DebugEngine.engine(controller, debugDrawer)
   }
@@ -16,6 +15,7 @@ object Connect4Debugger {
       }
       println()
     }
-    println()
+    val playing = state(2).asInstanceOf[Int]%2 + 1
+    println("Player" + playing + "\n")
   }
 }
