@@ -17,45 +17,13 @@ object Queens {
       val addPattern: Regex = "[0-7][a-h]".r
       val deletePattern: Regex = "del [a-h]".r
       if (deletePattern.matches(input)) {
-        var board = state(3).asInstanceOf[Array[Array[Boolean]]]
         val col = input.charAt(4) - 'a'
-        var queenAt = -1
-        for (row <- 0 to 7) {
-          if (board(row)(col) == true) queenAt = row
-        }
-        if (queenAt == -1) {
-          //Invalid column
-        }
-        else {
-          board(queenAt)(col) = false
-        }
+        delete_queen_at(col, actualState)
       }
       else if (addPattern.matches(input)) {
-        var board = actualState(3).asInstanceOf[Array[Array[Boolean]]]
         val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
-        var validQueen = true
-        //Check column
-        for (y <- 0 to 7) {
-          if (board(y)(col) == true) validQueen = false
-        }
-        //Check row
-        for (x <- 0 to 7) {
-          if (board(row)(x) == true) validQueen = false
-        }
-        //Check diagonals
-        var (diagRow, diagCol) = (row - Math.min(row, col), col - Math.min(row, col))
-        while (diagRow < 8 && diagCol < 8) {
-          if (board(diagRow)(diagCol) == true) validQueen = false
-          diagCol += 1
-          diagRow += 1
-        }
-        if (validQueen) {
-          board(diagRow-1)(diagCol-1) = true
-          actualState(2) = actualState(2).asInstanceOf[Int] + 1
-        }
-        else {
-          //Invalid place for queen
-        }
+        add_queen_at(row, col, actualState)
+
       }
       else {
         //Invalid input
@@ -63,6 +31,49 @@ object Queens {
     }
     actualState
   }
+
+  private def delete_queen_at(col: Int, state: Array[Any]): Unit = {
+    var board = state(3).asInstanceOf[Array[Array[Boolean]]]
+    var queenAt = -1
+    for (row <- 0 to 7) {
+      if (board(row)(col) == true) queenAt = row
+    }
+    if (queenAt == -1) {
+      //Invalid column
+    }
+    else {
+      board(queenAt)(col) = false
+    }
+  }
+
+  private def add_queen_at(row: Int, col: Int, state: Array[Any]): Unit ={
+    var board = state(3).asInstanceOf[Array[Array[Boolean]]]
+    var validQueen = true
+    //Check column
+    for (y <- 0 to 7) {
+      if (board(y)(col) == true) validQueen = false
+    }
+    //Check row
+    for (x <- 0 to 7) {
+      if (board(row)(x) == true) validQueen = false
+    }
+    //Check diagonals
+    var (diagRow, diagCol) = (row - Math.min(row, col), col - Math.min(row, col))
+    while (diagRow < 8 && diagCol < 8) {
+      if (board(diagRow)(diagCol) == true) validQueen = false
+      diagCol += 1
+      diagRow += 1
+    }
+    if (validQueen) {
+      board(row)(col) = true
+      state(2) = state(2).asInstanceOf[Int] + 1
+    }
+    else {
+      //Invalid place for queen
+    }
+  }
+
+
 
   val QueensDrawer = (state: Array[Any]) => {
       var gameState = state
