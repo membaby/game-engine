@@ -1,7 +1,9 @@
 package Games
 import App._
+
 import javax.swing._
 import java.awt.{Color, Component, GridLayout}
+import java.util.ArrayList
 import javax.swing.{JFrame, JLabel, JPanel}
 
 
@@ -17,42 +19,79 @@ object Checkers {
     if (inputPattern.matches(input)){
       val (destRow, destCol) = (input.charAt(3) - '0', input.charAt(4) - 'a')
       val (srcRow, srcCol) = (input.charAt(0) - '0', input.charAt(1) - 'a')
-      val player1 = actualState(2).asInstanceOf[Int] % 2 == 0
+      val validSrc = is_valid_source(srcRow, srcCol, actualState)
       if (board(destRow)(destCol) != ' '){
         //Invalid Destination
       }
-      else{
-        if (player1) {
-          if (board(srcRow)(srcCol) != '1') {
-            //Invalid Source
+      else if (!validSrc) {
+        //Invalid source
+      }
+      else {
+        val dests = get_possible_dests(srcRow, srcCol, actualState)
+        if (dests.contains((destRow, destCol))){
+          //Process the move
+          val player = board(srcRow)(srcCol)
+          board(srcRow)(srcCol) = ' '
+          board(destRow)(destCol) = player
+          if (Math.abs(destRow - srcRow) == 1){
+            //Normal move
+            state(2) = state(2).asInstanceOf[Int] + 1
           }
-          else {
-            var possibleDests = new Array[(Int, Int)](4)
-            if (board(srcRow-1)(srcCol-1) == ' ') possibleDests(0) = (srcRow-1, srcCol-1)
-            else if (board(srcRow-2)(srcCol-2) == ' ') possibleDests(1) = (srcRow-2, srcCol-2)
-            if (board(srcRow - 1)(srcCol + 1) == ' ') possibleDests(2) = (srcRow - 1, srcCol + 1)
-            else if (board(srcRow - 2)(srcCol + 2) == ' ') possibleDests(3) = (srcRow - 2, srcCol + 2)
-            //Missing rest of implementation
+          else if (Math.abs(destRow - srcRow) == 2){
+            //Jump move
+            val (midRow, midCol) = ((destRow - srcRow)/2 + srcRow, (destCol-srcCol)/2 + srcCol)
+            board(midRow)(midCol) = ' '
+            //Should check if double jump is possible. If so then don't increment turn
+            state(2) = state(2).asInstanceOf[Int] + 1
           }
         }
-        else {
-          if (board(srcRow)(srcCol) != '2') {
-            //Invalid Source
-          }
-          else {
-            //Missing rest of implementation
-          }
+        else{
+          //Invalid destination
+        }
       }
-
-      }
-
     }
-    else{
-      //Invalid Input
+    else {//Invalid input
     }
-
     actualState
   }
+
+  private def is_valid_source(row: Int, col: Int, state: Array[Any]): Boolean = {
+    val player1 = (state(2).asInstanceOf[Int] % 2) == 0
+    val board = state(3).asInstanceOf[Array[Array[Char]]]
+    return board(row)(col) match{
+      case '1' => player1 == true
+      case '2' => player1 == false
+    }
+  }
+
+  private def get_possible_dests(row: Int, col: Int, state: Array[Any]): ArrayList[(Int, Int)]={
+    val dests = new ArrayList[(Int, Int)]()
+    val currentPlayer = (state(2).asInstanceOf[Int] % 2)+1
+    val board = state(3).asInstanceOf[Array[Array[Char]]]
+    val direction = if(currentPlayer == 1) -1 else 1 //If it's player 1 then direction is up (-1). Otherwise it's down (1)
+    //Checking the ahead diagonals
+    val (rowDiag1, colDiag1) = (row + direction, col - 1) //Ahead and left
+    val (rowDiag2, colDiag2) = (row + direction, col + 1) //Ahead and right
+    if (row >= 7 || row <= 0) return dests
+    if (col > 0){
+      if (board(rowDiag1)(colDiag1) == ' ') dests.add((rowDiag1, colDiag1))
+      else if (board(rowDiag1)(colDiag1) - '0' != currentPlayer) {
+        val (rowDiagNext, colDiagNext) = (row + 2 * direction, col - 2)
+        if (board(rowDiagNext)(colDiagNext) == ' ') dests.add((rowDiagNext, colDiagNext))
+      }
+    }
+    if (col < 7){
+      if (board(rowDiag2)(colDiag2) == ' ') dests.add((rowDiag2, colDiag2))
+      else if (board(rowDiag2)(colDiag2) - '0' != currentPlayer) {
+        val (rowDiagNext, colDiagNext) = (row + 2 * direction, col - 2)
+        if (board(rowDiagNext)(colDiagNext) == ' ') dests.add((rowDiagNext, colDiagNext))
+      }
+    }
+    return dests
+  }
+
+
+
 
   val CheckersDrawer = (CurrentState: Array[Any]) => {
     var gameState = CurrentState.asInstanceOf[Array[Any]]
