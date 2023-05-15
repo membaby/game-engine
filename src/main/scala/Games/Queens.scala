@@ -60,12 +60,25 @@ object Queens {
       if (board(row)(x) == true) validQueen = false
     }
     //Check diagonals
+    //negative slope diagonal
     var (diagRow, diagCol) = (row - Math.min(row, col), col - Math.min(row, col))
     while (diagRow < 8 && diagCol < 8) {
-      if (board(diagRow)(diagCol) == true) validQueen = false
+      if ((diagRow != row || diagCol != col) && board(diagRow)(diagCol) == true) validQueen = false
       diagCol += 1
       diagRow += 1
     }
+    //postive slope diagonal
+    var (diagRow2, diagCol2) = (row, col)
+    while (diagRow2 < 7 && diagCol2 > 0){
+      diagRow2 += 1
+      diagCol2 -= 1
+    }
+    while(diagRow2 >= 0 && diagCol2 < 8){
+      if ((diagRow2 != row || diagCol2 != col) && board(diagRow2)(diagCol2) == true) validQueen = false
+      diagCol2 += 1
+      diagRow2 -= 1
+    }
+
     if (validQueen) {
       board(row)(col) = true
       state(2) = state(2).asInstanceOf[Int] + 1
