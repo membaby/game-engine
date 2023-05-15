@@ -127,10 +127,10 @@ object Chess {
       val white = board(srcRow)(srcCol) == w_KING
       for (i <- -1 to 1) {
         for (j <- -1 to 1) {
-          if (i == srcRow && j == srcCol) {} //The source square
-          else if (i < 0 || i > 7 || j < 0 || j > 7) {} //Out of board
+          val (row, col) = (srcRow + i, srcCol + j)
+          if (i == 0 && j == 0) {} //The source square
+          else if (row < 0 || row > 7 || col < 0 || col > 7) {} //Out of board
           else {
-            val (row, col) = (srcRow + i, srcCol + j)
             if (board(row)(col) == EMPTY || (white && is_black_piece(row, col, board)) || (!white && is_white_piece(row, col, board))) {
               dests.add((row, col))
             }
@@ -156,7 +156,7 @@ object Chess {
     var blocked2 = false
     var loc1 = if (vertical) srcRow-1 else srcCol-1
     var loc2 = if (vertical) srcRow+1 else srcCol+1
-    while (!blocked2 && !blocked1) { //Vertical checks
+    while (!blocked2 || !blocked1) { //Vertical checks
       if (!blocked1) {
         if (loc1 >= 0){
           val (row, col) = if (vertical) (loc1,srcCol) else (srcRow,loc1)
@@ -168,11 +168,12 @@ object Chess {
             dests.add((row, col))
             blocked1 = true
           }
+          else blocked1 = true
         }
         else blocked1 = true//This square is outside the board
       }
       if (!blocked2) {
-        if (loc2 >= 0) {
+        if (loc2 < 8) {
           val (row, col) = if (vertical) (loc2, srcCol) else (srcRow, loc2)
           if (board(row)(col) == EMPTY) { //This square is empty
             dests.add((row, col))
@@ -182,6 +183,7 @@ object Chess {
             dests.add((row, col))
             blocked2 = true
           }
+          else blocked2 = true
         }
         else blocked2 = true //This square is outside the board
       }
@@ -189,13 +191,13 @@ object Chess {
   }
 
   private def fill_dests_in_diagonal(srcRow: Int, srcCol: Int, board: Array[Array[Char]], positiveSlope: Boolean, dests: ArrayList[(Int,Int)]): Unit={
-    val rowIncrementer = if(positiveSlope) -1 else 1
+    val rowIncrementer = -1
     val colIncrementer = if(positiveSlope) 1 else -1
     val white = board(srcRow)(srcCol) < 'z' && board(srcRow)(srcCol) > 'a'
     var (row1, col1) = (srcRow - rowIncrementer, srcCol - colIncrementer)
     var (row2, col2) = (srcRow + rowIncrementer, srcCol + colIncrementer)
     var (blocked1, blocked2) = (false, false)
-    while(!blocked1 && !blocked2){
+    while(!blocked1 || !blocked2){
       if (!blocked1){
         if (row1 < 0 || row1 > 7 || col1 < 0 || col1 > 7) blocked1 = true// Out of board
         else{
