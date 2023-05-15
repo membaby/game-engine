@@ -11,12 +11,6 @@ import Games._
 
 object App {
 
-	private var engineThread: Thread = null
-	var inputReady: Boolean = false
-	var closeGame: Boolean = false
-	var input: String = ""
-	var board: JPanel = null
-
 	def main(args: Array[String]): Unit = {
 
 		// Helper Functions
@@ -154,4 +148,10 @@ object App {
 		frame.pack()
 		frame.setVisible(true)
 	}
+
+	private var engineThread: Thread = null
+	var inputReady: Boolean = false
+	var closeGame: Boolean = false
+	var input: String = ""
+	var board: JPanel = null
 }
