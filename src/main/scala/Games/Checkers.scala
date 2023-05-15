@@ -14,50 +14,52 @@ object Checkers {
     if (actualState == null){
       actualState = get_init_state()
     }
-    val board = actualState(3).asInstanceOf[Array[Array[Char]]]
-    val inputPattern = "[0-7][a-h] [0-7][a-h]".r
-    if (inputPattern.matches(input)){
-      val (destRow, destCol) = (input.charAt(3) - '0', input.charAt(4) - 'a')
-      val (srcRow, srcCol) = (input.charAt(0) - '0', input.charAt(1) - 'a')
-      val validSrc = is_valid_source(srcRow, srcCol, actualState)
-      if (board(destRow)(destCol) != ' '){
-        //Invalid Destination
-        actualState(5) = "Invalid move"
-      }
-      else if (!validSrc) {
-        //Invalid source
-        actualState(5) = "Invalid piece"
-      }
-      else {
-        val dests = get_possible_dests(srcRow, srcCol, actualState)
-        if (dests.contains((destRow, destCol))){
-          //Process the move
-          val player = board(srcRow)(srcCol)
-          board(srcRow)(srcCol) = ' '
-          board(destRow)(destCol) = player
-          if (Math.abs(destRow - srcRow) == 1){
-            //Normal move
-            state(2) = state(2).asInstanceOf[Int] + 1
-            actualState(5) = ""
-          }
-          else if (Math.abs(destRow - srcRow) == 2){
-            //Jump move
-            val (midRow, midCol) = ((destRow - srcRow)/2 + srcRow, (destCol-srcCol)/2 + srcCol)
-            board(midRow)(midCol) = ' '
-            //Should check if double jump is possible. If so then don't increment turn
-            state(2) = state(2).asInstanceOf[Int] + 1
-            actualState(5) = ""
-          }
-        }
-        else{
-          //Invalid destination
+    else{
+      val board = actualState(3).asInstanceOf[Array[Array[Char]]]
+      val inputPattern = "[0-7][a-h] [0-7][a-h]".r
+      if (inputPattern.matches(input)){
+        val (destRow, destCol) = (input.charAt(3) - '0', input.charAt(4) - 'a')
+        val (srcRow, srcCol) = (input.charAt(0) - '0', input.charAt(1) - 'a')
+        val validSrc = is_valid_source(srcRow, srcCol, actualState)
+        if (board(destRow)(destCol) != ' '){
+          //Invalid Destination
           actualState(5) = "Invalid move"
         }
+        else if (!validSrc) {
+          //Invalid source
+          actualState(5) = "Invalid piece"
+        }
+        else {
+          val dests = get_possible_dests(srcRow, srcCol, actualState)
+          if (dests.contains((destRow, destCol))){
+            //Process the move
+            val player = board(srcRow)(srcCol)
+            board(srcRow)(srcCol) = ' '
+            board(destRow)(destCol) = player
+            if (Math.abs(destRow - srcRow) == 1){
+              //Normal move
+              state(2) = state(2).asInstanceOf[Int] + 1
+              actualState(5) = ""
+            }
+            else if (Math.abs(destRow - srcRow) == 2){
+              //Jump move
+              val (midRow, midCol) = ((destRow - srcRow)/2 + srcRow, (destCol-srcCol)/2 + srcCol)
+              board(midRow)(midCol) = ' '
+              //Should check if double jump is possible. If so then don't increment turn
+              state(2) = state(2).asInstanceOf[Int] + 1
+              actualState(5) = ""
+            }
+          }
+          else{
+            //Invalid destination
+            actualState(5) = "Invalid move"
+          }
+        }
       }
-    }
-    else {
-      //Invalid input
-      actualState(5) = "Invalid input"
+      else {
+        //Invalid input
+        actualState(5) = "Invalid input"
+      }
     }
     actualState
   }
