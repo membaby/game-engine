@@ -263,9 +263,11 @@ object Chess {
             if (value != ' ') {
               if (value.isUpper) button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
               else button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
+              button.asInstanceOf[JButton].setText("")
             } else {
               button.asInstanceOf[JButton].setFont(new java.awt.Font("Arial", 1, 15))
               button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
+              button.asInstanceOf[JButton].setIcon(null)
             }
           }
         }

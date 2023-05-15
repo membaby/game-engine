@@ -104,6 +104,9 @@ object Queens {
             if (gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j)) {
               button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/queen.png"))
               button.asInstanceOf[JButton].setText("")
+            } else {
+              button.asInstanceOf[JButton].setIcon(null)
+              button.asInstanceOf[JButton].setText(i.toString + (97+j).toChar)
             }
           }
         }
