@@ -114,7 +114,7 @@ object Sudoku {
       }
 
     }
-//    App.errorLabel.setText(gameState(6).asInstanceOf[String])
+    App.errorLabel.setText(gameState(6).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
   }

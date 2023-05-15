@@ -26,9 +26,11 @@ object Connect4 {
           else res = '2'
           board(nextRow)(col) = res
           state(2) = state(2).asInstanceOf[Int] + 1
+          actualState(6) = ""
         }
         else {
           //Full column
+          actualState(6) = "Column is full"
         }
       }
       else if ("del [a-g]".r.matches(input)) {
@@ -43,7 +45,12 @@ object Connect4 {
           }
         }
         actualState(2) = actualState(2).asInstanceOf[Int] + 1
+        actualState(6) = ""
         }
+      else{
+        //Invalid input
+        actualState(6) = "Invalid input"
+      }
     }
     actualState
   }
@@ -86,7 +93,7 @@ object Connect4 {
         }
       }
     }
-
+    App.errorLabel.setText(gameState(5).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
   }

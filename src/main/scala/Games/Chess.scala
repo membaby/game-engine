@@ -30,19 +30,23 @@ object Chess {
             val piece = board(srcRow)(srcCol)
             board(destRow)(destCol) = piece
             board(srcRow)(srcCol) = EMPTY
-            state(2) = state(2).asInstanceOf[Int] + 1
+            actualState(2) = actualState(2).asInstanceOf[Int] + 1
+            actualState(4) = ""
           }
           else{
             //Invalid move
+            actualState(4) = "Invalid move"
           }
 
         }
         else{
           //Invalid source
+          actualState(4) = "Invalid piece"
         }
       }
       else{
         //Invalid input
+        actualState(4) = "Invalid input"
       }
     }
     actualState
@@ -233,53 +237,54 @@ object Chess {
 
 
   val ChessDrawer = (CurrentState: Array[Any]) => {
-      var gameState = CurrentState.asInstanceOf[Array[Any]]
-      if (App.board.getComponentCount == 0) {
-        App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
-        var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
-        for (i <- 0 until gameState(0).asInstanceOf[Int]) {
-          for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-            buttons(i)(j) = new JButton()
-            val value = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j)
-            if (value != ' ') {
-              if (value.isUpper) buttons(i)(j).setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
-              else buttons(i)(j).setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
-            } else {
-              buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
-              buttons(i)(j).setText(i.toString + (97 + j).toChar)
-            }
-            if ((i + j) % 2 == 0) {
-              buttons(i)(j).setBackground(Color.WHITE);
-            } else {
-              buttons(i)(j).setBackground(Color.BLACK);
-            }
-            App.board.add(buttons(i)(j))
+    var gameState = CurrentState.asInstanceOf[Array[Any]]
+    if (App.board.getComponentCount == 0) {
+      App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
+      var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          buttons(i)(j) = new JButton()
+          val value = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j)
+          if (value != ' ') {
+            if (value.isUpper) buttons(i)(j).setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
+            else buttons(i)(j).setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
+          } else {
+            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
+            buttons(i)(j).setText(i.toString + (97 + j).toChar)
           }
+          if ((i + j) % 2 == 0) {
+            buttons(i)(j).setBackground(Color.WHITE);
+          } else {
+            buttons(i)(j).setBackground(Color.BLACK);
+          }
+          App.board.add(buttons(i)(j))
         }
-      } else {
-        val buttons = App.board.getComponents
-        for (i <- 0 until gameState(0).asInstanceOf[Int]) {
-          for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-            val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
-            val value = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j)
-            if (value != ' ') {
-              if (value.isUpper) button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
-              else button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
-              button.asInstanceOf[JButton].setText("")
-            } else {
-              button.asInstanceOf[JButton].setFont(new java.awt.Font("Arial", 1, 15))
-              button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
-              button.asInstanceOf[JButton].setIcon(null)
-            }
+      }
+    } else {
+      val buttons = App.board.getComponents
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
+          val value = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j)
+          if (value != ' ') {
+            if (value.isUpper) button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
+            else button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
+            button.asInstanceOf[JButton].setText("")
+          } else {
+            button.asInstanceOf[JButton].setFont(new java.awt.Font("Arial", 1, 15))
+            button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
+            button.asInstanceOf[JButton].setIcon(null)
           }
         }
       }
-      App.board.revalidate()
-      App.board.repaint()
     }
+    App.errorLabel.setText(gameState(4).asInstanceOf[String])
+    App.board.revalidate()
+    App.board.repaint()
+  }
 
   private def get_init_state(): Array[Any]={
-    val state = new Array[Any](4)
+    val state = new Array[Any](5)
     val rows = 8
     val cols = 8
     val turns = 0
@@ -306,6 +311,7 @@ object Chess {
     state(1) = cols
     state(2) = turns
     state(3) = board
+    state(4) = ""
 
     return state
   }

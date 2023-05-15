@@ -22,9 +22,11 @@ object Checkers {
       val validSrc = is_valid_source(srcRow, srcCol, actualState)
       if (board(destRow)(destCol) != ' '){
         //Invalid Destination
+        actualState(5) = "Invalid move"
       }
       else if (!validSrc) {
         //Invalid source
+        actualState(5) = "Invalid piece"
       }
       else {
         val dests = get_possible_dests(srcRow, srcCol, actualState)
@@ -36,6 +38,7 @@ object Checkers {
           if (Math.abs(destRow - srcRow) == 1){
             //Normal move
             state(2) = state(2).asInstanceOf[Int] + 1
+            actualState(5) = ""
           }
           else if (Math.abs(destRow - srcRow) == 2){
             //Jump move
@@ -43,14 +46,18 @@ object Checkers {
             board(midRow)(midCol) = ' '
             //Should check if double jump is possible. If so then don't increment turn
             state(2) = state(2).asInstanceOf[Int] + 1
+            actualState(5) = ""
           }
         }
         else{
           //Invalid destination
+          actualState(5) = "Invalid move"
         }
       }
     }
-    else {//Invalid input
+    else {
+      //Invalid input
+      actualState(5) = "Invalid input"
     }
     actualState
   }
@@ -143,12 +150,13 @@ object Checkers {
         }
       }
     }
+    App.errorLabel.setText(gameState(5).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
   }
 
   private def get_init_state(): Array[Any] ={
-    var state = new Array[Any](5)
+    var state = new Array[Any](6)
     val (row, col, turn) = (8, 8, 0)
     val board = Array.fill(8)(Array.fill(8)(' '))
     var row1 = 1
@@ -177,7 +185,7 @@ object Checkers {
     state(2) = turn
     state(3) = board
     state(4) = history
-
+    state(5) = ""
 
     return state
   }
