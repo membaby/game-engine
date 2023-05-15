@@ -61,6 +61,7 @@ object Checkers {
     return board(row)(col) match{
       case '1' => player1 == true
       case '2' => player1 == false
+      case ' ' => false
     }
   }
 

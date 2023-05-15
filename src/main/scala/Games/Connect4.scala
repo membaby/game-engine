@@ -93,7 +93,7 @@ object Connect4 {
 
 
   private def get_init_state(): Array[Any] = {
-    var state = new Array[Any](5)
+    var state = new Array[Any](6)
     val (row, col, turn) = (6,7,0)
     var board = Array.fill(6)(Array.fill(7)(' '))
     var history = List(board)
@@ -102,6 +102,7 @@ object Connect4 {
     state(2) = turn
     state(3) = board
     state(4) = history
+    state(5) = ""
     return state
   }
 
