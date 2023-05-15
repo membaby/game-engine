@@ -7,9 +7,9 @@ import java.util.ArrayList
 import javax.swing.{JFrame, JLabel, JPanel}
 
 object Chess {
-  val EMPTY = ' '
-  val (w_PAWN, w_ROOK, w_BISHOP, w_KNIGHT, w_QUEEN, w_KING) = ('p', 'r', 'b', 'n', 'q', 'k')
-  val (b_PAWN, b_ROOK, b_BISHOP, b_KNIGHT, b_QUEEN, b_KING) = ('P', 'R', 'B', 'N', 'Q', 'K')
+  private val EMPTY = ' '
+  private val (w_PAWN, w_ROOK, w_BISHOP, w_KNIGHT, w_QUEEN, w_KING) = ('p', 'r', 'b', 'n', 'q', 'k')
+  private val (b_PAWN, b_ROOK, b_BISHOP, b_KNIGHT, b_QUEEN, b_KING) = ('P', 'R', 'B', 'N', 'Q', 'K')
 
 
   val ChessController = (input: String, state: Array[Any]) => {
@@ -20,11 +20,11 @@ object Chess {
     else{
       val validInput = "[0-7][a-h] [0-7][a-h]".r
       if (validInput.matches(input)){
-        val (srcRow, srcCol) = (input.charAt(0), input.charAt(1))
+        val (srcRow, srcCol) = (input.charAt(0)-'0', input.charAt(1)-'a')
         val validSrc = is_valid_source(srcRow, srcCol, actualState)
         if (validSrc){
           val board = actualState(3).asInstanceOf[Array[Array[Char]]]
-          val (destRow, destCol) = (input.charAt(3), input.charAt(4))
+          val (destRow, destCol) = (input.charAt(3)-'0', input.charAt(4)-'a')
           val possibleDestinations = get_possible_moves(srcRow, srcCol, actualState)
           if (possibleDestinations.contains((destRow, destCol))){
             val piece = board(srcRow)(srcCol)
@@ -51,7 +51,6 @@ object Chess {
 
   private def is_valid_source(row: Int, col: Int, state: Array[Any]): Boolean = {
     val curPlayer = state(2).asInstanceOf[Int]%2 + 1
-    val src = state(3).asInstanceOf[Array[Array[Char]]](row)(col)
     return curPlayer match{
       case 1 => is_white_piece(row, col, state(3).asInstanceOf[Array[Array[Char]]])
       case 2 => is_black_piece(row, col, state(3).asInstanceOf[Array[Array[Char]]])
@@ -62,80 +61,78 @@ object Chess {
     val board = state(3).asInstanceOf[Array[Array[Char]]]
     val piece = board(srcRow)(srcCol)
     var dests = new ArrayList[(Int, Int)]()
-    piece match {
-      case w_PAWN => {
-        if (srcRow != 0){
-          if(board(srcRow-1)(srcCol) == EMPTY) dests.add((srcRow-1, srcCol)) //Empty ahead
-          if (srcCol != 0 && is_black_piece(srcRow-1, srcCol-1, board)){
-            //Enemy at left diagonal
-            dests.add((srcRow-1, srcCol-1))
-          }
-          if (srcCol != 7 && is_black_piece(srcRow-1, srcCol+1, board)){
-            //Enemy at right diagonal
-            dests.add((srcRow-1, srcCol+1))
+    if (piece == w_PAWN){
+      if (srcRow != 0) {
+        if (board(srcRow - 1)(srcCol) == EMPTY) dests.add((srcRow - 1, srcCol)) //Empty ahead
+        if (srcCol != 0 && is_black_piece(srcRow - 1, srcCol - 1, board)) {
+          //Enemy at left diagonal
+          dests.add((srcRow - 1, srcCol - 1))
+        }
+        if (srcCol != 7 && is_black_piece(srcRow - 1, srcCol + 1, board)) {
+          //Enemy at right diagonal
+          dests.add((srcRow - 1, srcCol + 1))
+        }
+      }
+      if (srcRow == 6 && board(srcRow - 2)(srcCol) == EMPTY) dests.add((srcRow - 2, srcCol)) //First move
+    }
+    else if(piece == b_PAWN){
+      if (srcRow != 7) {
+        if (board(srcRow + 1)(srcCol) == EMPTY) dests.add((srcRow + 1, srcCol)) //Empty ahead
+        if (srcCol != 0 && is_white_piece(srcRow + 1, srcCol - 1, board)) {
+          //Enemy at left diagonal
+          dests.add((srcRow + 1, srcCol - 1))
+        }
+        if (srcCol != 7 && is_white_piece(srcRow + 1, srcCol + 1, board)) {
+          //Enemy at right diagonal
+          dests.add((srcRow + 1, srcCol + 1))
+        }
+      }
+      if (srcRow == 1 && board(srcRow + 2)(srcCol) == EMPTY) dests.add((srcRow + 2, srcCol)) //First move
+    }
+    else if(piece == w_ROOK || piece == b_ROOK){
+      fill_dests_in_line(srcRow, srcCol, board, true, dests)
+      fill_dests_in_line(srcRow, srcCol, board, false, dests)
+    }
+    else if(piece == w_BISHOP || piece == b_BISHOP){
+      fill_dests_in_diagonal(srcRow, srcCol, board, true, dests)
+      fill_dests_in_diagonal(srcRow, srcCol, board, false, dests)
+    }
+    else if(piece == w_KNIGHT || piece == b_KNIGHT){
+      val arr = new Array[(Int, Int)](8)
+      arr(0) = (srcRow - 2, srcCol - 1)
+      arr(1) = (srcRow - 2, srcCol + 1)
+      arr(2) = (srcRow - 1, srcCol - 2)
+      arr(3) = (srcRow + 1, srcCol - 2)
+      arr(4) = (srcRow + 2, srcCol - 1)
+      arr(5) = (srcRow + 2, srcCol + 1)
+      arr(6) = (srcRow - 1, srcCol + 2)
+      arr(7) = (srcRow + 1, srcCol + 2)
+      val white = board(srcRow)(srcCol) == w_KNIGHT
+      for (i <- 0 to 7) {
+        val (row, col) = arr(i)
+        if (!(row < 0 || row > 7 || col < 0 || col > 7)) {
+          if (board(row)(col) == EMPTY || (white && is_black_piece(row, col, board)) || (!white && is_white_piece(row, col, board))) {
+            dests.add((row, col))
           }
         }
-        if (srcRow == 6 && board(srcRow-2)(srcCol) == EMPTY) dests.add((srcRow-2, srcCol)) //First move
       }
-      case b_PAWN => {
-        if (srcRow != 7) {
-          if (board(srcRow+1)(srcCol) == EMPTY) dests.add((srcRow+1, srcCol)) //Empty ahead
-          if (srcCol != 0 && is_white_piece(srcRow+1, srcCol-1, board)) {
-            //Enemy at left diagonal
-            dests.add((srcRow + 1, srcCol - 1))
-          }
-          if (srcCol != 7 && is_white_piece(srcRow+1, srcCol+1, board)) {
-            //Enemy at right diagonal
-            dests.add((srcRow + 1, srcCol + 1))
-          }
-        }
-        if (srcRow == 1 && board(srcRow + 2)(srcCol) == EMPTY) dests.add((srcRow + 2, srcCol)) //First move
-      }
-      case w_ROOK | b_ROOK => {
-        fill_dests_in_line(srcRow, srcCol, board, true, dests)
-        fill_dests_in_line(srcRow, srcCol, board, false, dests)
-      }
-      case w_BISHOP | b_BISHOP => {
-        fill_dests_in_diagonal(srcRow, srcCol, board, true, dests)
-        fill_dests_in_diagonal(srcRow, srcCol, board, false, dests)
-      }
-      case w_KNIGHT | b_KNIGHT => {
-        val arr = new Array[(Int, Int)](8)
-        arr(0) = (srcRow - 2, srcCol - 1)
-        arr(1) = (srcRow - 2, srcCol + 1)
-        arr(2) = (srcRow - 1, srcCol - 2)
-        arr(3) = (srcRow + 1, srcCol - 2)
-        arr(4) = (srcRow + 2, srcCol - 1)
-        arr(5) = (srcRow + 2, srcCol + 1)
-        arr(6) = (srcRow - 1, srcCol + 2)
-        arr(7) = (srcRow + 1, srcCol + 2)
-        val white = board(srcRow)(srcCol) == w_KNIGHT
-        for (i <- 0 to 7){
-          val (row, col) = arr(i)
-          if (!(row < 0 || row > 7 || col < 0 || col > 7)){
-            if (board(row)(col) == EMPTY || (white && is_black_piece(row, col, board)) || (!white && is_white_piece(row, col, board))){
+    }
+    else if(piece == w_QUEEN || piece == b_QUEEN){
+      fill_dests_in_line(srcRow, srcCol, board, true, dests)
+      fill_dests_in_line(srcRow, srcCol, board, false, dests)
+      fill_dests_in_diagonal(srcRow, srcCol, board, true, dests)
+      fill_dests_in_diagonal(srcRow, srcCol, board, false, dests)
+    }
+    else if(piece == w_KING || piece == b_KING){
+      val white = board(srcRow)(srcCol) == w_KING
+      for (i <- -1 to 1) {
+        for (j <- -1 to 1) {
+          if (i == srcRow && j == srcCol) {} //The source square
+          else if (i < 0 || i > 7 || j < 0 || j > 7) {} //Out of board
+          else {
+            val (row, col) = (srcRow + i, srcCol + j)
+            if (board(row)(col) == EMPTY || (white && is_black_piece(row, col, board)) || (!white && is_white_piece(row, col, board))) {
               dests.add((row, col))
-            }
-          }
-        }
-      }
-      case w_QUEEN | b_QUEEN => {
-        fill_dests_in_line(srcRow, srcCol, board, true, dests)
-        fill_dests_in_line(srcRow, srcCol, board, false, dests)
-        fill_dests_in_diagonal(srcRow, srcCol, board, true, dests)
-        fill_dests_in_diagonal(srcRow, srcCol, board, false, dests)
-      }
-      case w_KING | b_KING => {
-        val white = board(srcRow)(srcCol) == w_KING
-        for (i <- -1 to 1){
-          for (j <- -1 to 1){
-            if (i == srcRow && j == srcCol){}//The source square
-            else if(i < 0 || i > 7 || j < 0 || j > 7){}//Out of board
-            else{
-              val (row, col) = (srcRow + i, srcCol + j)
-              if (board(row)(col) == EMPTY || (white && is_black_piece(row, col, board)) || (!white && is_white_piece(row, col, board))){
-                dests.add((row, col))
-              }
             }
           }
         }

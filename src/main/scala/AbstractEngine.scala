@@ -10,16 +10,19 @@ object AbstractEngine
 		val concrete_controller = abstract_controller(controller)
 		val concrete_drawer = abstract_drawer(drawer)
 		state = concrete_controller("", null)
-		while (true)
+		var running = true
+		while (running)
 		{
 			concrete_drawer(state)
 			while (!App.inputReady && !App.closeGame) {
 				Thread.sleep(16)
 			}
-			if (App.closeGame) break
-			var input: String = App.input
-			App.inputReady = false
-			state = concrete_controller(input, state)
+			if (App.closeGame) running = false
+			else{
+				var input: String = App.input
+				App.inputReady = false
+				state = concrete_controller(input, state)
+			}
 		}
 	}
 
