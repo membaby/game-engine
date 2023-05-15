@@ -22,9 +22,11 @@ object Sudoku {
         val (row, col) = (input.charAt(4) - '0', input.charAt(5) - 'a')
         if (!origNums(row)(col) && board(row)(col) != 0) {
           board(row)(col) = 0
+          actualState(6) = ""
         }
         else {
           //Invalid square to delete
+          actualState(6) = "Invalid square to delete"
         }
       }
       else if (addPattern.matches(input)) {
@@ -32,6 +34,7 @@ object Sudoku {
         var board = actualState(3).asInstanceOf[Array[Array[Int]]]
         if (board(row)(col) != 0) {
           //Invalid square to add to
+          actualState(6) = "Invalid square to add to"
         }
         else {
           val num = input.charAt(3) - '0'
@@ -54,14 +57,17 @@ object Sudoku {
           if (validNum) {
             board(row)(col) = num
             state(2) = state(2).asInstanceOf[Int] + 1
+            actualState(6) = ""
           }
           else {
             //Invalid number to add
+            actualState(6) = "number to add"
           }
         }
       }
       else {
         //Invalid input
+        actualState(6) = "Invalid input"
       }
     }
     actualState
@@ -108,7 +114,7 @@ object Sudoku {
       }
 
     }
-
+    App.errorLabel.setText(gameState(6).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
   }
@@ -128,7 +134,7 @@ object Sudoku {
     println()
     val history = List(board)
     var originalNums = Array.fill(9)(Array.fill(9)(true))
-    var state = new Array[Any](6)
+    var state = new Array[Any](7)
     //Hiding some numbers
     val numOfHidden: Int = 30
     var hidden = 0
@@ -147,6 +153,7 @@ object Sudoku {
     state(3) = board
     state(4) = originalNums
     state(5) = history
+    state(6) = ""
     state
   }
 

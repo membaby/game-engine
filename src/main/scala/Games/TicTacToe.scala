@@ -24,6 +24,11 @@ object TicTacToe {
           else res = '2'
           board(row)(col) = res
           actualState(2) = actualState(2).asInstanceOf[Int] + 1
+          actualState(5) = ""
+        }
+        else{
+          //Invalid square
+          actualState(5) = "Invalid Square"
         }
       } else if ("del [0-2][a-c]".r.matches(input)){
         var row = input.charAt(4) - '0'
@@ -33,7 +38,8 @@ object TicTacToe {
         actualState(2) = actualState(2).asInstanceOf[Int] + 1
       }
       else {
-        println("INVALID INPUT")
+        //Invalid input
+        actualState(5) = "Invalid Input"
       }
     }
     actualState
@@ -77,18 +83,19 @@ object TicTacToe {
         }
       }
     }
-
+    App.errorLabel.setText(gameState(5).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
   }
 
   private def get_init_state(): Array[Any] = {
-    var state = new Array[Any](5)
+    var state = new Array[Any](6)
     state(0) = 3
     state(1) = 3
     state(2) = 0
     state(3) = Array.ofDim[Char](3, 3).map(_.map(_ => ' '))
     state(4) = Array(state(3))
+    state(5) = ""
     return state
   }
 }

@@ -23,10 +23,10 @@ object Queens {
       else if (addPattern.matches(input)) {
         val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
         add_queen_at(row, col, actualState)
-
       }
       else {
         //Invalid input
+        actualState(5) = "Invalid Input"
       }
     }
     actualState
@@ -40,9 +40,11 @@ object Queens {
     }
     if (queenAt == -1) {
       //Invalid column
+      state(5) = "Invalid column"
     }
     else {
       board(queenAt)(col) = false
+      state(5) = true
     }
   }
 
@@ -67,9 +69,11 @@ object Queens {
     if (validQueen) {
       board(row)(col) = true
       state(2) = state(2).asInstanceOf[Int] + 1
+      state(5) = ""
     }
     else {
       //Invalid place for queen
+      state(5) = "Invalid square for queen"
     }
   }
 
@@ -111,13 +115,13 @@ object Queens {
           }
         }
       }
-
+      App.errorLabel.setText(gameState(5).asInstanceOf[String])
       App.board.revalidate()
       App.board.repaint()
   }
 
   private def get_init_state(): Array[Any] ={
-    var state = new Array[Any](5)
+    var state = new Array[Any](6)
     var (row, col, turn) = (8, 8, 0)
     var board: Array[Array[Boolean]] = Array.fill(8)(Array.fill(8)(false))
     var history = List(board)
@@ -126,6 +130,7 @@ object Queens {
     state(2) = turn
     state(3) = board
     state(4) = history
+    state(5) = ""
     return state
   }
 
