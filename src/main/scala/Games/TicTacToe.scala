@@ -83,7 +83,7 @@ object TicTacToe {
         }
       }
     }
-    App.errorLabel.setText(gameState(5).asInstanceOf[String])
+//    App.errorLabel.setText(gameState(5).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
   }
