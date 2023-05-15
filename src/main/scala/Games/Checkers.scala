@@ -102,7 +102,7 @@ object Checkers {
         for (j <- 0 until gameState(1).asInstanceOf[Int]) {
           buttons(i)(j) = new JButton()
           if (gameState(3).asInstanceOf[Array[Array[Char]]](i)(j) == ' ') {
-            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 20))
+            buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
             buttons(i)(j).setText(i.toString + (97 + j).toChar)
             buttons(i)(j).setForeground(Color.GRAY);
           } else if (gameState(3).asInstanceOf[Array[Array[Char]]](i)(j) == '1') {
@@ -114,7 +114,6 @@ object Checkers {
           }
           if ((i + j) % 2 == 0) {
             buttons(i)(j).setBackground(Color.WHITE);
-            buttons(i)(j).setText("")
           } else {
             buttons(i)(j).setBackground(Color.BLACK);
           }
@@ -122,26 +121,26 @@ object Checkers {
         }
       }
     } else {
-//      val buttons = App.board.getComponents
-//      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
-//        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
-//          val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
-//          val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
-//          if (text == 49) {
-//            button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/red-circle.png"))
-//            button.asInstanceOf[JButton].setText("")
-//          }
-//          else if (text == 50) {
-//            button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/blue-circle.png"))
-//            button.asInstanceOf[JButton].setText("")
-//          } else {
-//            if (button.asInstanceOf[JButton].getText.length != 1) {
-//              button.asInstanceOf[JButton].setText("")
-//              button.asInstanceOf[JButton].setIcon(null)
-//            }
-//          }
-//        }
-//      }
+      val buttons = App.board.getComponents
+      for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+        for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+          val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
+          val text = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j).asInstanceOf[Int]
+          if (text == 49) {
+            button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/black-circle.png"))
+            button.asInstanceOf[JButton].setText("")
+          }
+          else if (text == 50) {
+            button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/white-circle.png"))
+            button.asInstanceOf[JButton].setText("")
+          } else {
+            if (button.asInstanceOf[JButton].getText.length != 1) {
+              button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
+              button.asInstanceOf[JButton].setIcon(null)
+            }
+          }
+        }
+      }
     }
     App.board.revalidate()
     App.board.repaint()

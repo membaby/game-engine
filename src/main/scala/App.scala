@@ -86,7 +86,7 @@ object App {
 				case "Sudoku" 	 => (Sudoku.SudokuController, Sudoku.SudokuDrawer, "Sudoku")
 				case "TicTacToe" => (TicTacToe.TicTacToeController, TicTacToe.TicTacToeDrawer, "Tic Tac Toe")
 				case "8Queens" 	 => (Queens.QueensController, Queens.QueensDrawer, "8 Queens")
-//				case "Chess" 		 => (Chess.ChessController, Chess.ChessDrawer, "Chess")
+				case "Chess" 		 => (Chess.ChessController, Chess.ChessDrawer, "Chess")
 				case "connect-4" => (Connect4.ConnectController, Connect4.ConnectDrawer, "Connect 4")
 			}
 			setGameTitle(title)

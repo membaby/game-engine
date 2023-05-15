@@ -1,5 +1,5 @@
 package Games
-
+import App._
 import javax.swing._
 import java.awt.{Color, Component, GridLayout}
 import javax.swing.{JFrame, JLabel, JPanel}
@@ -68,29 +68,49 @@ object Chess {
     }
   }
 
-  /*
-  Notes for drawer about board contents:
-  Feel free to use the constants defined at the beginning of the file
-
-  empty squares = ' '
-  white pieces are:
-  pawn = 'p'
-  rook = 'r'
-  bishop = 'b'
-  knight = 'n'
-  queen = 'q'
-  king = 'k'
-  black pieces are:
-  pawn = 'P'
-  rook = 'R'
-  bishop = 'B'
-  knight = 'N'
-  queen = 'Q'
-  king = 'K'
-  */
   val ChessDrawer = (CurrentState: Array[Any]) => {
-
-  }
+      var gameState = CurrentState.asInstanceOf[Array[Any]]
+      if (App.board.getComponentCount == 0) {
+        App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
+        var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
+        for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+          for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+            buttons(i)(j) = new JButton()
+            val value = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j)
+            if (value != ' ') {
+              if (value.isUpper) buttons(i)(j).setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
+              else buttons(i)(j).setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
+            } else {
+              buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
+              buttons(i)(j).setText(i.toString + (97 + j).toChar)
+            }
+            if ((i + j) % 2 == 0) {
+              buttons(i)(j).setBackground(Color.WHITE);
+            } else {
+              buttons(i)(j).setBackground(Color.BLACK);
+            }
+            App.board.add(buttons(i)(j))
+          }
+        }
+      } else {
+        val buttons = App.board.getComponents
+        for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+          for (j <- 0 until gameState(1).asInstanceOf[Int]) {
+            val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
+            val value = gameState(3).asInstanceOf[Array[Array[Char]]](i)(j)
+            if (value != ' ') {
+              if (value.isUpper) button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-black.png"))
+              else button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/chess/" + value + "-white.png"))
+            } else {
+              button.asInstanceOf[JButton].setFont(new java.awt.Font("Arial", 1, 15))
+              button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
+            }
+          }
+        }
+      }
+      App.board.revalidate()
+      App.board.repaint()
+    }
 
   private def get_init_state(): Array[Any]={
     val state = new Array[Any](4)

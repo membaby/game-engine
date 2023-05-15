@@ -87,6 +87,11 @@ object Queens {
             buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
             buttons(i)(j).setText(i.toString + (97+j).toChar)
             buttons(i)(j).setForeground(Color.GRAY)
+            if ((i + j) % 2 == 0) {
+              buttons(i)(j).setBackground(Color.WHITE);
+            } else {
+              buttons(i)(j).setBackground(Color.BLACK);
+            }
             App.board.add(buttons(i)(j))
           }
         }
@@ -100,8 +105,6 @@ object Queens {
               button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/queen.png"))
               button.asInstanceOf[JButton].setText("")
             }
-
-            println(i, j, gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j))
           }
         }
       }
