@@ -8,11 +8,12 @@ import scala.collection.immutable.List
 import java.awt.event.{ActionEvent, ActionListener, MouseAdapter, MouseEvent}
 import Games._
 
+import GameSolver.{solve}
+
 
 object App {
 
   def main(args: Array[String]): Unit = {
-
     // Helper Functions
     def createButton(panel: JPanel, iconPath: String, x: Int, y: Int): JLabel = {
       val btn = new JLabel(new ImageIcon(ImageIO.read(new File(iconPath))))
@@ -48,6 +49,18 @@ object App {
     btn_act.setBounds(200, 680, 150, 50)
     gamePanel.add(btn_act)
     val user_input_1 = createTextField(gamePanel, 38, 680)
+
+    // Solve Button
+    val btn_solve = new JButton("Solve")
+    btn_solve.setBounds(950, 680, 150, 50)
+    gamePanel.add(btn_solve)
+        btn_solve.addMouseListener(new MouseAdapter {
+          override def mouseClicked(e: MouseEvent): Unit = {
+            input = "solve"
+            inputReady = true
+          }
+        })
+
 
     errorLabel = new JLabel("HELLO")
     errorLabel.setBounds(500, 15, 1000, 84)
@@ -90,6 +103,14 @@ object App {
         case "Chess" => (Chess.ChessController, Chess.ChessDrawer, "Chess")
         case "connect-4" => (Connect4.ConnectController, Connect4.ConnectDrawer, "Connect 4")
       }
+      // == Solve Button (START) ==  //
+
+      if (game == "Sudoku" || game == "8Queens") {
+        btn_solve.setVisible(true)
+      } else {
+        btn_solve.setVisible(false)
+      }
+      // == Solve Button (END) ==  //
       setGameTitle(title)
       engineThread = new Thread(new Runnable {
         override def run(): Unit = AbstractEngine.abstract_engine(controller, drawer)

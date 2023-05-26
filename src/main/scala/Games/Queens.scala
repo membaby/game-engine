@@ -5,6 +5,8 @@ import javax.swing.{JFrame, JLabel, JPanel}
 import java.awt.Color
 import scala.util.matching.Regex
 import App._
+import GameSolver.solve
+import org.jpl7.Compound
 
 object Queens {
 
@@ -23,6 +25,27 @@ object Queens {
       else if (addPattern.matches(input)) {
         val (row, col) = (input.charAt(0) - '0', input.charAt(1) - 'a')
         add_queen_at(row, col, actualState)
+      }
+      else if (input == "solve") {
+        var board = actualState(3).asInstanceOf[Array[Array[Boolean]]]
+        var solver_query = ""
+        for (row <- 0 to 7) {
+          var queen = 0
+          for (col <- 0 to 7) {
+            if (board(row)(col)) queen = col + 1
+          }
+          if (row < 7) solver_query += queen.toString + ","
+          else solver_query += queen.toString
+        }
+        solver_query = "[" + solver_query + "]"
+        solver_query = solver_query.replace("0", "_")
+        val solution = solve("8queens", solver_query)
+        for (row <- 0 to 7) {
+          for (col <- 0 to 7) {
+            board(row)(col) = solution(row)(col).asInstanceOf[Boolean]
+            println(board(row)(col))
+          }
+        }
       }
       else {
         //Invalid input
@@ -94,6 +117,7 @@ object Queens {
 
   val QueensDrawer = (state: Array[Any]) => {
       var gameState = state
+      var game_finished = false
       if (App.board.getComponentCount == 0) {
         gameState = get_init_state()
         App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
@@ -116,15 +140,21 @@ object Queens {
         gameState = state
         val buttons = App.board.getComponents
         for (i <- 0 until gameState(0).asInstanceOf[Int]) {
+          var solved = false
           for (j <- 0 until gameState(1).asInstanceOf[Int]) {
             val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
             if (gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j)) {
               button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/queen.png"))
               button.asInstanceOf[JButton].setText("")
+              solved = true
             } else {
               button.asInstanceOf[JButton].setIcon(null)
               button.asInstanceOf[JButton].setText(i.toString + (97+j).toChar)
             }
+          }
+          if (solved) {
+            game_finished = true
+            gameState(5) = "Game finished"
           }
         }
       }

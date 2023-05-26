@@ -5,7 +5,7 @@ import javax.swing.{JFrame, JLabel, JPanel}
 import scala.util.Random
 import scala.util.matching.Regex
 import App._
-
+import GameSolver.solve
 
 object Sudoku {
   type SudokuGrid = Array[Array[Int]]
@@ -65,6 +65,17 @@ object Sudoku {
           }
         }
       }
+      else if (input == "solve"){
+        val board = actualState(3).asInstanceOf[Array[Array[Int]]]
+        var solver_query = "[" + board.map(innerList => innerList.mkString(", ")).mkString("[", "], [", "]") + "]"
+        solver_query = solver_query.replace("0", "_")
+        val solution = solve("sudoku", solver_query)
+        for (i <- 0 until 9) {
+          for (j <- 0 until 9) {
+            board(i)(j) = solution(i)(j).asInstanceOf[Int]
+          }
+        }
+      }
       else {
         //Invalid input
         actualState(6) = "Invalid input"
@@ -74,6 +85,7 @@ object Sudoku {
   }
   val SudokuDrawer = (CurrentState: Array[Any]) => {
     var gameState = CurrentState
+    var game_finished = true;
     if (App.board.getComponentCount == 0) {
       App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
       var buttons = Array.ofDim[JButton](gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int])
@@ -81,6 +93,7 @@ object Sudoku {
         for (j <- 0 until gameState(1).asInstanceOf[Int]) {
           buttons(i)(j) = new JButton(i.toString + (97 + j).toChar)
           if (gameState(3).asInstanceOf[Array[Array[Int]]](i)(j) == 0) {
+            game_finished = false;
             buttons(i)(j).setFont(new java.awt.Font("Arial", 1, 15))
             buttons(i)(j).setForeground(Color.GRAY);
           } else {
@@ -114,6 +127,8 @@ object Sudoku {
       }
 
     }
+
+    if (game_finished) gameState(6) = "Puzzle Solved!"
     App.errorLabel.setText(gameState(6).asInstanceOf[String])
     App.board.revalidate()
     App.board.repaint()
@@ -124,14 +139,14 @@ object Sudoku {
     val cols = 9
     val turn = 0
     val board = SudokuSolver.generateSolvedPuzzle()
-    println("Generated Board")
+    println("Originally Generated Board:")
     for (i <- 0 to 8){
       for (j <- 0 to 8){
         printf("%5d", board(i)(j))
       }
       println()
     }
-    println()
+    println("================================================")
     val history = List(board)
     var originalNums = Array.fill(9)(Array.fill(9)(true))
     var state = new Array[Any](7)
