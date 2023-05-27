@@ -122,6 +122,7 @@ object Sudoku {
             button.asInstanceOf[JButton].setText(i.toString + (97 + j).toChar)
             button.setFont(new java.awt.Font("Arial", 1, 15))
             button.setForeground(Color.GRAY);
+            game_finished = false;
           }
         }
       }
@@ -151,7 +152,7 @@ object Sudoku {
     var originalNums = Array.fill(9)(Array.fill(9)(true))
     var state = new Array[Any](7)
     //Hiding some numbers
-    val numOfHidden: Int = 30
+    val numOfHidden: Int = 10
     var hidden = 0
     while (hidden < numOfHidden){
       var (row, col) = (Random.nextInt(9), Random.nextInt(9))

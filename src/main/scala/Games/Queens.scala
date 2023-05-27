@@ -40,10 +40,14 @@ object Queens {
         solver_query = "[" + solver_query + "]"
         solver_query = solver_query.replace("0", "_")
         val solution = solve("8queens", solver_query)
-        for (row <- 0 to 7) {
-          for (col <- 0 to 7) {
-            board(row)(col) = solution(row)(col).asInstanceOf[Boolean]
-            println(board(row)(col))
+        if (solution == null) {
+          actualState(5) = "No solution"
+        }
+        else {
+          for (row <- 0 to 7) {
+            for (col <- 0 to 7) {
+              board(row)(col) = solution(row)(col).asInstanceOf[Boolean]
+            }
           }
         }
       }
@@ -117,7 +121,6 @@ object Queens {
 
   val QueensDrawer = (state: Array[Any]) => {
       var gameState = state
-      var game_finished = false
       if (App.board.getComponentCount == 0) {
         gameState = get_init_state()
         App.board.setLayout(new GridLayout(gameState(0).asInstanceOf[Int], gameState(1).asInstanceOf[Int]))
@@ -139,23 +142,22 @@ object Queens {
       } else {
         gameState = state
         val buttons = App.board.getComponents
+        var solved_rows = 0
         for (i <- 0 until gameState(0).asInstanceOf[Int]) {
-          var solved = false
           for (j <- 0 until gameState(1).asInstanceOf[Int]) {
             val button = buttons(i * gameState(1).asInstanceOf[Int] + j)
             if (gameState(3).asInstanceOf[Array[Array[Boolean]]](i)(j)) {
               button.asInstanceOf[JButton].setIcon(new ImageIcon("src/main/static/queen.png"))
               button.asInstanceOf[JButton].setText("")
-              solved = true
+              solved_rows += 1
             } else {
               button.asInstanceOf[JButton].setIcon(null)
               button.asInstanceOf[JButton].setText(i.toString + (97+j).toChar)
             }
           }
-          if (solved) {
-            game_finished = true
-            gameState(5) = "Game finished"
-          }
+        }
+        if (solved_rows == gameState(0).asInstanceOf[Int]) {
+          gameState(5) = "Game finished"
         }
       }
       App.errorLabel.setText(gameState(5).asInstanceOf[String])
