@@ -3,6 +3,9 @@ Game Engine built with Scala
 
 ![Home Screen](Images/home.png?raw=true "Home Screen")
 
+- Phase 1 Report: [Link to Google Docs](https://docs.google.com/document/d/1qz47yCn05e7oeptXKtYCcPcDrVB4AiB7p_L46e-QugQ/)
+- Phase 2 Report: [Link to Google Docs](https://docs.google.com/document/d/1MuG2YE3CpQSWyCuoXCpydsBD99gOocffA1zGazdmDqM/)
+
 The project involves investigating and implementing three main programming language paradigms:
 - Object-oriented programming (Javascript)
 - Functional programming (Scala)
