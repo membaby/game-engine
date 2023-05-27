@@ -7,9 +7,11 @@ import scala.util.matching.Regex
 import App._
 import GameSolver.solve
 import org.jpl7.Compound
+import java.io.{BufferedWriter, FileWriter, IOException}
 
 object Queens {
-
+  val PrologMethod = 1
+  // 0 = Using Parameters // 1 = Using File //
   val QueensController = (input: String, state: Array[Any]) => {
     var actualState = state
     if (actualState == null){
@@ -39,7 +41,24 @@ object Queens {
         }
         solver_query = "[" + solver_query + "]"
         solver_query = solver_query.replace("0", "_")
-        val solution = solve("8queens", solver_query)
+
+        var solution: Array[Array[Any]] = null
+        if (PrologMethod == 1) {
+          try {
+            val writer = new BufferedWriter(new FileWriter("src/board.txt"))
+            writer.write("8queens\n" + solver_query)
+            writer.flush()
+            writer.close()
+          } catch {
+            case e: IOException =>
+              e.printStackTrace()
+          }
+          solution = solve()
+          println("Solution Fetched (File Method Used)")
+        } else {
+          solution = solve("8queens", solver_query)
+          println("Solution Fetched (Parameters Method Used)")
+        }
         if (solution == null) {
           actualState(5) = "No solution"
         }

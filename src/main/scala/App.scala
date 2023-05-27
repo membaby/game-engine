@@ -8,9 +8,6 @@ import scala.collection.immutable.List
 import java.awt.event.{ActionEvent, ActionListener, MouseAdapter, MouseEvent}
 import Games._
 
-import GameSolver.{solve}
-
-
 object App {
 
   def main(args: Array[String]): Unit = {

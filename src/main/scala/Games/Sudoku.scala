@@ -6,9 +6,13 @@ import scala.util.Random
 import scala.util.matching.Regex
 import App._
 import GameSolver.solve
+import java.io.{BufferedWriter, FileWriter, IOException}
+
 
 object Sudoku {
   type SudokuGrid = Array[Array[Int]]
+  val PrologMethod = 0
+  // 0 = Using Parameters // 1 = Using File //
 
   val SudokuController = (input: String, state: Array[Any]) => {
     var actualState = state
@@ -69,11 +73,34 @@ object Sudoku {
         val board = actualState(3).asInstanceOf[Array[Array[Int]]]
         var solver_query = "[" + board.map(innerList => innerList.mkString(", ")).mkString("[", "], [", "]") + "]"
         solver_query = solver_query.replace("0", "_")
-        val solution = solve("sudoku", solver_query)
-        for (i <- 0 until 9) {
-          for (j <- 0 until 9) {
-            board(i)(j) = solution(i)(j).asInstanceOf[Int]
+
+        var solution: Array[Array[Any]] = null
+        if (PrologMethod == 1) {
+          try {
+            val writer = new BufferedWriter(new FileWriter("src/board.txt"))
+            writer.write("sudoku\n" + solver_query)
+            writer.flush()
+            writer.close()
+          } catch {
+            case e: IOException =>
+              e.printStackTrace()
           }
+          solution = solve()
+          println("Solution Fetched (File Method Used)")
+        } else {
+          solution = solve("sudoku", solver_query)
+          println("Solution Fetched (Parameters Method Used)")
+        }
+        if (solution != null) {
+          for (i <- 0 until 9) {
+            for (j <- 0 until 9) {
+              board(i)(j) = solution(i)(j).asInstanceOf[Int]
+            }
+          }
+        } else {
+          //No solution found
+          actualState(6) = "No solution found"
+          println("No solution found")
         }
       }
       else {
@@ -152,7 +179,7 @@ object Sudoku {
     var originalNums = Array.fill(9)(Array.fill(9)(true))
     var state = new Array[Any](7)
     //Hiding some numbers
-    val numOfHidden: Int = 10
+    val numOfHidden: Int = 40
     var hidden = 0
     while (hidden < numOfHidden){
       var (row, col) = (Random.nextInt(9), Random.nextInt(9))
